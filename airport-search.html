@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .search-container h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            text-align: left;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .results p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Airport Search</h1>
+    </header>
+    <div class="search-container">
+        <h2>Search for Airport Contacts</h2>
+        <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
+        <button onclick="searchAirport()">Search</button>
+        <div id="results" class="results"></div>
+    </div>
+    <script>
+        let airportEmails = {};
+
+        // Load the airport emails from JSON
+        async function loadAirportData() {
+            try {
+                const response = await fetch('assets/emails.json');
+                airportEmails = await response.json();
+                console.log('Airport data loaded:', airportEmails);
+            } catch (error) {
+                console.error('Error loading airport data:', error);
+            }
+        }
+
+        // Search for the airport contact information
+        function searchAirport() {
+            const airportCode = document.getElementById('airportCode').value.toUpperCase();
+            const resultsDiv = document.getElementById('results');
+
+            if (airportCode in airportEmails) {
+                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${airportEmails[airportCode]}</p>`;
+            } else {
+                resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
+            }
+        }
+
+        // Load the airport data when the page loads
+        window.onload = loadAirportData;
+    </script>
+</body>
+</html>
