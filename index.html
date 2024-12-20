@@ -32,8 +32,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
-            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
         }
         .overlay {
             position: fixed;
@@ -42,7 +51,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            z-index: 2;
+            z-index: 1;
         }
         .login-box {
             width: 320px;
@@ -179,11 +188,11 @@
 </head>
 <body>
 <div class="login-container">
-   <div class="video-background">
-    <video autoplay muted loop playsinline>
-        <source src="assets/videos/background.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="assets/videos/background.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
     <div class="overlay"></div>
     <div class="login-box">
@@ -200,7 +209,7 @@
     <h1>SCR Management System</h1>
 </header>
 <div class="container">
-    <div class="btn-group">
+     <div class="btn-group">
         <button onclick="createForm('New Slot')">New Slot</button>
         <button onclick="createForm('Change Slot')">Change Slot</button>
         <button onclick="createForm('Cancel Slot')">Cancel Slot</button>
@@ -269,7 +278,6 @@
             <tbody></tbody>
         </table>
         <button onclick="downloadCSV()">Download CSV</button>
-    </div>
 </div>
 <script>
     let slotAction = '';
