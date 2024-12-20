@@ -1,1 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCR Management System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 800px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            margin: 0 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-section {
+            margin-top: 15px;
+            text-align: left;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            flex: 1;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            flex: 2;
+            padding: 5px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #scrMessageContainer {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>SCR Management System</h1>
+</header>
+<div class="container">
+    <div id="form-container">
+        <div class="form-section" data-id="1">
+            <h3>SCR Form 1</h3>
+            <div class="form-group">
+                <label for="slotType">Slot Type:</label>
+                <select class="slotType">
+                    <option value="ARRIVAL">ARRIVAL</option>
+                    <option value="DEPARTURE">DEPARTURE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="airportCode">Airport (3 Letters):</label>
+                <input type="text" class="airportCode" maxlength="3" placeholder="e.g., VLC">
+            </div>
+            <div class="form-group">
+                <label for="flightNumber">Flight No.:</label>
+                <input type="text" class="flightNumber" placeholder="e.g., FR6060">
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" class="date">
+            </div>
+            <div class="form-group">
+                <label for="numberOfSeats">Seats:</label>
+                <input type="number" class="numberOfSeats" placeholder="e.g., 189" maxlength="3">
+            </div>
+            <div class="form-group">
+                <label for="aircraftType">Aircraft:</label>
+                <input type="text" class="aircraftType" placeholder="e.g., 73H">
+            </div>
+            <div class="form-group">
+                <label for="time">Time:</label>
+                <input type="text" class="time" maxlength="4" placeholder="e.g., 0725">
+            </div>
+            <div class="form-group">
+                <label for="destinationOrigin">Dest/Orig:</label>
+                <input type="text" class="destinationOrigin" placeholder="e.g., MAD">
+            </div>
+            <div class="form-group">
+                <label for="serviceType">Service:</label>
+                <select class="serviceType">
+                    <option value="P">P</option>
+                    <option value="J">J</option>
+                    <option value="D">D</option>
+                    <option value="K">K</option>
+                    <option value="X">X</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button onclick="addMoreForm()">Add More</button>
+        <button onclick="showSCR()">SHOW SCR</button>
+        <button onclick="emailSCR()">EMAIL SCR</button>
+    </div>
+    <div id="scrMessageContainer"></div>
+</div>
+<script>
+    let formCount = 1;
+    const scrMessages = [];
+
+    function addMoreForm() {
+        formCount++;
+        const formContainer = document.getElementById('form-container');
+        const newForm = document.createElement('div');
+        newForm.classList.add('form-section');
+        newForm.setAttribute('data-id', formCount);
+        newForm.innerHTML = `
+            <h3>SCR Form ${formCount}</h3>
+            <div class="form-group">
+                <label for="slotType">Slot Type:</label>
+                <select class="slotType">
+                    <option value="ARRIVAL">ARRIVAL</option>
+                    <option value="DEPARTURE">DEPARTURE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="airportCode">Airport (3 Letters):</label>
+                <input type="text" class="airportCode" maxlength="3" placeholder="e.g., VLC">
+            </div>
+            <div class="form-group">
+                <label for="flightNumber">Flight No.:</label>
+                <input type="text" class="flightNumber" placeholder="e.g., FR6060">
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" class="date">
+            </div>
+            <div class="form-group">
+                <label for="numberOfSeats">Seats:</label>
+                <input type="number" class="numberOfSeats" placeholder="e.g., 189" maxlength="3">
+            </div>
+            <div class="form-group">
+                <label for="aircraftType">Aircraft:</label>
+                <input type="text" class="aircraftType" placeholder="e.g., 73H">
+            </div>
+            <div class="form-group">
+                <label for="time">Time:</label>
+                <input type="text" class="time" maxlength="4" placeholder="e.g., 0725">
+            </div>
+            <div class="form-group">
+                <label for="destinationOrigin">Dest/Orig:</label>
+                <input type="text" class="destinationOrigin" placeholder="e.g., MAD">
+            </div>
+            <div class="form-group">
+                <label for="serviceType">Service:</label>
+                <select class="serviceType">
+                    <option value="P">P</option>
+                    <option value="J">J</option>
+                    <option value="D">D</option>
+                    <option value="K">K</option>
+                    <option value="X">X</option>
+                </select>
+            </div>
+        `;
+        formContainer.appendChild(newForm);
+    }
+
+    function showSCR() {
+        const formSections = document.querySelectorAll('.form-section');
+        scrMessages.length = 0; // Clear previous messages
+        const scrMessageContainer = document.getElementById('scrMessageContainer');
+        scrMessageContainer.innerHTML = '';
+
+        formSections.forEach((form, index) => {
+            const slotType = form.querySelector('.slotType').value;
+            const airportCode = form.querySelector('.airportCode').value.toUpperCase();
+            const flightNumber = form.querySelector('.flightNumber').value;
+            const date = form.querySelector('.date').value;
+            const numberOfSeats = form.querySelector('.numberOfSeats').value.padStart(3, '0');
+            const aircraftType = form.querySelector('.aircraftType').value.toUpperCase();
+            const time = form.querySelector('.time').value.padStart(4, '0');
+            const destinationOrigin = form.querySelector('.destinationOrigin').value.toUpperCase();
+            const serviceType = form.querySelector('.serviceType').value;
+
+            if (!airportCode || !flightNumber || !date || !numberOfSeats || !aircraftType || !time || !destinationOrigin) {
+                alert(`Please fill in all fields for Form ${index + 1}`);
+                return;
+            }
+
+            const scrMessage = `SCR Message ${index + 1}:
+Slot Type: ${slotType}
+Airport Code: ${airportCode}
+Flight Number: ${flightNumber}
+Date: ${date}
+Seats: ${numberOfSeats}
+Aircraft: ${aircraftType}
+Time: ${time}
+Destination/Origin: ${destinationOrigin}
+Service Type: ${serviceType}`;
+
+            scrMessages.push(scrMessage);
+
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = scrMessage;
+            messageDiv.style.marginBottom = '10px';
+            scrMessageContainer.appendChild(messageDiv);
+        });
+    }
+
+    function emailSCR() {
+        if (scrMessages.length === 0) {
+            alert('No SCR messages to email. Please generate SCR messages first.');
+            return;
+        }
+
+        const emailBody = scrMessages.join('\n\n');
+        const subject = 'SCR Messages';
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+    }
+</script>
+</body>
+</html>
 
