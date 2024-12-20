@@ -288,7 +288,7 @@
     // Load email data from JSON
     async function loadEmailData() {
         try {
-            const response = await fetch('assets/emails.json');
+            const response = await fetch('assets/emails/emails.json');
             airportEmails = await response.json();
             console.log('Email data loaded:', airportEmails);
         } catch (error) {
