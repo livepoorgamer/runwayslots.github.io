@@ -360,8 +360,19 @@
         const month = monthNames[date.getMonth()];
         const formattedDate = `${day}${month}`;
 
-        let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "D" : "N";
-        let scrMessage = `
+        let scrTypeIndicator = "";
+
+    if (slotAction === "CANCEL SLOT") {
+        scrTypeIndicator = "D"; // Cancel Slot
+    } else if (slotAction === "NEW SLOT") {
+        scrTypeIndicator = "N"; // New Slot
+    } else if (slotAction === "CHANGE SLOT") {
+        scrTypeIndicator = "C"; // Change Slot
+    } else {
+        scrTypeIndicator = ""; // Default or error case (optional)
+    }
+
+    let scrMessage = `
 SCR  
 W24  
 ${formattedDate}  
