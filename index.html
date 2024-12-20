@@ -452,7 +452,7 @@ SI ${slotAction} SLOT REQ ${airportCode}`;
             return;
         }
 
-        const subject = encodeURIComponent("SCR Message Request");
+        const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
         const body = encodeURIComponent(scrMessage);
         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
