@@ -209,7 +209,7 @@
     <h1>SCR Management System</h1>
 </header>
 <div class="container">
-     <div class="btn-group">
+    <div class="btn-group">
         <button onclick="createForm('New Slot')">New Slot</button>
         <button onclick="createForm('Change Slot')">Change Slot</button>
         <button onclick="createForm('Cancel Slot')">Cancel Slot</button>
@@ -278,10 +278,23 @@
             <tbody></tbody>
         </table>
         <button onclick="downloadCSV()">Download CSV</button>
+    </div>
 </div>
 <script>
     let slotAction = '';
+    let airportEmails = {}; // Store emails loaded from JSON
     const logData = [];
+
+    // Load email data from JSON
+    async function loadEmailData() {
+        try {
+            const response = await fetch('assets/emails.json');
+            airportEmails = await response.json();
+            console.log('Email data loaded:', airportEmails);
+        } catch (error) {
+            console.error('Error loading email data:', error);
+        }
+    }
 
     function login() {
         const username = document.getElementById('username').value;
@@ -415,15 +428,26 @@ SI ${slotAction} REQ ${airportCode}`;
 
     function emailSCR() {
         const scrMessage = document.getElementById('scrMessage').textContent;
+        const airportCode = document.getElementById("airportCode").value.toUpperCase();
+        const email = airportEmails[airportCode];
+
         if (!scrMessage) {
             alert("No SCR message to email. Generate it first.");
             return;
         }
 
+        if (!email) {
+            alert(`No email found for airport code: ${airportCode}`);
+            return;
+        }
+
         const subject = encodeURIComponent("SCR Message Request");
         const body = encodeURIComponent(scrMessage);
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
+
+    // Load email data when the page loads
+    window.onload = loadEmailData;
 </script>
 </body>
 </html>
