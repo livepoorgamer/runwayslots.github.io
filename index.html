@@ -10,16 +10,101 @@
             margin: 0;
             padding: 0;
             text-align: center;
+            overflow: hidden;
         }
         header {
             background-color: #007BFF;
             color: white;
             padding: 20px;
         }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            color: white;
+            z-index: 2;
+        }
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+        .login-box {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            z-index: 3;
+            animation: fadeIn 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .login-box h2 {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+        }
+        .login-box label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-box button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+            text-align: center;
+        }
         .container {
+            display: none;
             margin: 20px auto;
             padding: 15px;
-            max-width: 800px;
+            max-width: 600px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -43,14 +128,13 @@
         button:hover {
             background-color: #0056b3;
         }
-        .form-section {
+        .form-section, .log-section {
             margin-top: 15px;
             text-align: left;
         }
         .form-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 10px;
         }
         .form-group label {
             flex: 1;
@@ -64,7 +148,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        #scrMessageContainer {
+        #scrMessage, #logContainer {
             margin-top: 15px;
             padding: 10px;
             background-color: #f9f9f9;
@@ -74,184 +158,267 @@
             white-space: pre-wrap;
             font-size: 12px;
         }
+        #logContainer {
+            display: none;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #007BFF;
+            color: white;
+        }
     </style>
 </head>
 <body>
+<div class="login-container">
+    <div class="video-background">
+        <iframe
+            src="https://www.youtube.com/embed/7qqYam-A368?autoplay=1&mute=1&loop=1&playlist=7qqYam-A368&controls=0&showinfo=0&modestbranding=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+            style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+        </iframe>
+    </div>
+    <div class="overlay"></div>
+    <div class="login-box">
+        <h2>Login</h2>
+        <div class="error-message" id="errorMessage">Invalid username or password</div>
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+    </div>
+</div>
 <header>
     <h1>SCR Management System</h1>
 </header>
 <div class="container">
-    <div id="form-container">
-        <div class="form-section" data-id="1">
-            <h3>SCR Form 1</h3>
-            <div class="form-group">
-                <label for="slotType">Slot Type:</label>
-                <select class="slotType">
-                    <option value="ARRIVAL">ARRIVAL</option>
-                    <option value="DEPARTURE">DEPARTURE</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="airportCode">Airport (3 Letters):</label>
-                <input type="text" class="airportCode" maxlength="3" placeholder="e.g., VLC">
-            </div>
-            <div class="form-group">
-                <label for="flightNumber">Flight No.:</label>
-                <input type="text" class="flightNumber" placeholder="e.g., FR6060">
-            </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" class="date">
-            </div>
-            <div class="form-group">
-                <label for="numberOfSeats">Seats:</label>
-                <input type="number" class="numberOfSeats" placeholder="e.g., 189" maxlength="3">
-            </div>
-            <div class="form-group">
-                <label for="aircraftType">Aircraft:</label>
-                <input type="text" class="aircraftType" placeholder="e.g., 73H">
-            </div>
-            <div class="form-group">
-                <label for="time">Time:</label>
-                <input type="text" class="time" maxlength="4" placeholder="e.g., 0725">
-            </div>
-            <div class="form-group">
-                <label for="destinationOrigin">Dest/Orig:</label>
-                <input type="text" class="destinationOrigin" placeholder="e.g., MAD">
-            </div>
-            <div class="form-group">
-                <label for="serviceType">Service:</label>
-                <select class="serviceType">
-                    <option value="P">P</option>
-                    <option value="J">J</option>
-                    <option value="D">D</option>
-                    <option value="K">K</option>
-                    <option value="X">X</option>
-                </select>
-            </div>
-        </div>
-    </div>
     <div class="btn-group">
-        <button onclick="addMoreForm()">Add More</button>
+        <button onclick="createForm('New Slot')">New Slot</button>
+        <button onclick="createForm('Change Slot')">Change Slot</button>
+        <button onclick="createForm('Cancel Slot')">Cancel Slot</button>
+        <button onclick="showLog()">Log</button>
+    </div>
+    <div id="form-section" class="form-section">
+        <h3 id="form-title"></h3>
+        <div class="form-group">
+            <label for="slotType">Slot Type:</label>
+            <select id="slotType">
+                <option value="ARRIVAL">ARRIVAL</option>
+                <option value="DEPARTURE">DEPARTURE</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="airportCode">Airport (3 Letters):</label>
+            <input type="text" id="airportCode" maxlength="3" placeholder="e.g., VLC">
+        </div>
+        <div class="form-group">
+            <label for="flightNumber">Flight No.:</label>
+            <input type="text" id="flightNumber" placeholder="e.g., FR6060">
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date">
+        </div>
+        <div class="form-group">
+            <label for="numberOfSeats">Seats:</label>
+            <input type="number" id="numberOfSeats" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
+        </div>
+        <div class="form-group">
+            <label for="aircraftType">Aircraft:</label>
+            <input type="text" id="aircraftType" placeholder="e.g., 73H">
+        </div>
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="text" id="time" maxlength="4" placeholder="e.g., 0725">
+        </div>
+        <div class="form-group">
+            <label for="destinationOrigin">Dest/Orig:</label>
+            <input type="text" id="destinationOrigin" placeholder="e.g., MAD">
+        </div>
+        <div class="form-group">
+            <label for="serviceType">Service:</label>
+            <select id="serviceType">
+                <option value="P">P</option>
+                <option value="J">J</option>
+                <option value="D">D</option>
+                <option value="K">K</option>
+                <option value="X">X</option>
+            </select>
+        </div>
         <button onclick="showSCR()">SHOW SCR</button>
         <button onclick="emailSCR()">EMAIL SCR</button>
+        <div id="scrMessage"></div>
     </div>
-    <div id="scrMessageContainer"></div>
+    <div id="logContainer" class="log-section">
+        <h3>Message Log</h3>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Slot Type</th>
+                    <th>SCR Message</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="downloadCSV()">Download CSV</button>
+    </div>
 </div>
 <script>
-    let formCount = 1;
-    const scrMessages = [];
+    let slotAction = '';
+    const logData = [];
 
-    function addMoreForm() {
-        formCount++;
-        const formContainer = document.getElementById('form-container');
-        const newForm = document.createElement('div');
-        newForm.classList.add('form-section');
-        newForm.setAttribute('data-id', formCount);
-        newForm.innerHTML = `
-            <h3>SCR Form ${formCount}</h3>
-            <div class="form-group">
-                <label for="slotType">Slot Type:</label>
-                <select class="slotType">
-                    <option value="ARRIVAL">ARRIVAL</option>
-                    <option value="DEPARTURE">DEPARTURE</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="airportCode">Airport (3 Letters):</label>
-                <input type="text" class="airportCode" maxlength="3" placeholder="e.g., VLC">
-            </div>
-            <div class="form-group">
-                <label for="flightNumber">Flight No.:</label>
-                <input type="text" class="flightNumber" placeholder="e.g., FR6060">
-            </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" class="date">
-            </div>
-            <div class="form-group">
-                <label for="numberOfSeats">Seats:</label>
-                <input type="number" class="numberOfSeats" placeholder="e.g., 189" maxlength="3">
-            </div>
-            <div class="form-group">
-                <label for="aircraftType">Aircraft:</label>
-                <input type="text" class="aircraftType" placeholder="e.g., 73H">
-            </div>
-            <div class="form-group">
-                <label for="time">Time:</label>
-                <input type="text" class="time" maxlength="4" placeholder="e.g., 0725">
-            </div>
-            <div class="form-group">
-                <label for="destinationOrigin">Dest/Orig:</label>
-                <input type="text" class="destinationOrigin" placeholder="e.g., MAD">
-            </div>
-            <div class="form-group">
-                <label for="serviceType">Service:</label>
-                <select class="serviceType">
-                    <option value="P">P</option>
-                    <option value="J">J</option>
-                    <option value="D">D</option>
-                    <option value="K">K</option>
-                    <option value="X">X</option>
-                </select>
-            </div>
-        `;
-        formContainer.appendChild(newForm);
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+        
+        if (username === "root" && password === "root") {
+            document.querySelector('.login-container').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            document.body.style.backgroundColor = '#f4f4f9';
+        } else {
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    function createForm(action) {
+        slotAction = action.toUpperCase();
+        const formSection = document.getElementById('form-section');
+        document.getElementById('form-title').textContent = `${action} Slot Form`;
+        formSection.style.display = 'block';
+    }
+
+    function validateSeats(input) {
+        if (input.value.length > 3) {
+            input.value = input.value.slice(0, 3);
+        }
+    }
+
+    function getDayValue(date) {
+        const dayValues = {
+            'Sunday': '0000007',
+            'Monday': '1000000',
+            'Tuesday': '0200000',
+            'Wednesday': '0030000',
+            'Thursday': '0004000',
+            'Friday': '0000500',
+            'Saturday': '0000060'
+        };
+        const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date);
+        return dayValues[dayName];
     }
 
     function showSCR() {
-        const formSections = document.querySelectorAll('.form-section');
-        scrMessages.length = 0; // Clear previous messages
-        const scrMessageContainer = document.getElementById('scrMessageContainer');
-        scrMessageContainer.innerHTML = '';
+        const slotType = document.getElementById('slotType').value;
+        const airportCode = document.getElementById('airportCode').value.toUpperCase();
+        const flightNumber = document.getElementById('flightNumber').value;
+        const dateInput = document.getElementById('date').value;
+        const numberOfSeats = document.getElementById('numberOfSeats').value.padStart(3, '0');
+        const aircraftType = document.getElementById('aircraftType').value.toUpperCase();
+        const time = document.getElementById('time').value.padStart(4, '0');
+        const destinationOrigin = document.getElementById('destinationOrigin').value.toUpperCase();
+        const serviceType = document.getElementById('serviceType').value;
 
-        formSections.forEach((form, index) => {
-            const slotType = form.querySelector('.slotType').value;
-            const airportCode = form.querySelector('.airportCode').value.toUpperCase();
-            const flightNumber = form.querySelector('.flightNumber').value;
-            const date = form.querySelector('.date').value;
-            const numberOfSeats = form.querySelector('.numberOfSeats').value.padStart(3, '0');
-            const aircraftType = form.querySelector('.aircraftType').value.toUpperCase();
-            const time = form.querySelector('.time').value.padStart(4, '0');
-            const destinationOrigin = form.querySelector('.destinationOrigin').value.toUpperCase();
-            const serviceType = form.querySelector('.serviceType').value;
-
-            if (!airportCode || !flightNumber || !date || !numberOfSeats || !aircraftType || !time || !destinationOrigin) {
-                alert(`Please fill in all fields for Form ${index + 1}`);
-                return;
-            }
-
-            const scrMessage = `SCR Message ${index + 1}:
-Slot Type: ${slotType}
-Airport Code: ${airportCode}
-Flight Number: ${flightNumber}
-Date: ${date}
-Seats: ${numberOfSeats}
-Aircraft: ${aircraftType}
-Time: ${time}
-Destination/Origin: ${destinationOrigin}
-Service Type: ${serviceType}`;
-
-            scrMessages.push(scrMessage);
-
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = scrMessage;
-            messageDiv.style.marginBottom = '10px';
-            scrMessageContainer.appendChild(messageDiv);
-        });
-    }
-
-    function emailSCR() {
-        if (scrMessages.length === 0) {
-            alert('No SCR messages to email. Please generate SCR messages first.');
+        if (!airportCode || !flightNumber || !dateInput || !numberOfSeats || !aircraftType || !time || !destinationOrigin) {
+            alert("Please fill in all fields.");
             return;
         }
 
-        const emailBody = scrMessages.join('\n\n');
-        const subject = 'SCR Messages';
-        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+        const date = new Date(dateInput);
+        const dayValue = getDayValue(date);
+        const day = date.getDate().toString().padStart(2, '0');
+        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const month = monthNames[date.getMonth()];
+        const formattedDate = `${day}${month}`;
+
+        let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "X" : "N";
+        let scrMessage = `
+SCR  
+W24  
+${formattedDate}  
+${airportCode}  
+`;
+
+        if (slotType === "ARRIVAL") {
+            scrMessage += `${scrTypeIndicator}${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${destinationOrigin}${time} ${serviceType}  
+SI ${slotAction} REQ ${airportCode}`;
+        } else if (slotType === "DEPARTURE") {
+            scrMessage += `${scrTypeIndicator} ${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType}  
+SI ${slotAction} REQ ${airportCode}`;
+        }
+
+        const scrMessageDiv = document.getElementById('scrMessage');
+        scrMessageDiv.textContent = scrMessage.trim();
+        scrMessageDiv.style.display = 'block';
+
+        // Log data
+        logData.push({
+            slotAction,
+            scrMessage: scrMessage.trim()
+        });
+    }
+
+    function showLog() {
+        const logContainer = document.getElementById('logContainer');
+        const logTableBody = document.querySelector("#logTable tbody");
+        logTableBody.innerHTML = ""; // Clear previous logs
+        logData.forEach(log => {
+            const row = logTableBody.insertRow();
+            const cellAction = row.insertCell(0);
+            const cellMessage = row.insertCell(1);
+            cellAction.textContent = log.slotAction;
+            cellMessage.textContent = log.scrMessage;
+        });
+        logContainer.style.display = logData.length > 0 ? "block" : "none";
+    }
+
+    function downloadCSV() {
+        if (logData.length === 0) {
+            alert("No log data available to download.");
+            return;
+        }
+
+        const csvContent = [
+            ["Slot Action", "SCR Message"], // Headers
+            ...logData.map(log => [log.slotAction, log.scrMessage.replace(/\n/g, " ")]) // Escape newlines
+        ]
+            .map(row => row.map(field => `"${field}"`).join(",")) // Quote fields
+            .join("\n"); // Join rows
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "scr_log.csv");
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function emailSCR() {
+        const scrMessage = document.getElementById('scrMessage').textContent;
+        if (!scrMessage) {
+            alert("No SCR message to email. Generate it first.");
+            return;
+        }
+
+        const subject = encodeURIComponent("SCR Message Request");
+        const body = encodeURIComponent(scrMessage);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 </script>
 </body>
 </html>
-
