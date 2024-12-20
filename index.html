@@ -381,10 +381,10 @@ ${airportCode}
 
         if (slotType === "ARRIVAL") {
             scrMessage += `${scrTypeIndicator}${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${destinationOrigin}${time} ${serviceType}  
-SI ${slotAction} SLOT REQ ${airportCode}`;
+SI ${slotAction} REQ ${airportCode}`;
         } else if (slotType === "DEPARTURE") {
             scrMessage += `${scrTypeIndicator} ${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType}  
-SI ${slotAction} SLOT REQ ${airportCode}`;
+SI ${slotAction} REQ ${airportCode}`;
         }
 
         const scrMessageDiv = document.getElementById('scrMessage');
