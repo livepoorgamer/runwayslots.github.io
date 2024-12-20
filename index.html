@@ -360,7 +360,7 @@
         const month = monthNames[date.getMonth()];
         const formattedDate = `${day}${month}`;
 
-        let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "X" : "N";
+        let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "D" : "N";
         let scrMessage = `
 SCR  
 W24  
@@ -370,10 +370,10 @@ ${airportCode}
 
         if (slotType === "ARRIVAL") {
             scrMessage += `${scrTypeIndicator}${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${destinationOrigin}${time} ${serviceType}  
-SI ${slotAction} REQ ${airportCode}`;
+SI ${slotAction} SLOT REQ ${airportCode}`;
         } else if (slotType === "DEPARTURE") {
             scrMessage += `${scrTypeIndicator} ${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType}  
-SI ${slotAction} REQ ${airportCode}`;
+SI ${slotAction} SLOT REQ ${airportCode}`;
         }
 
         const scrMessageDiv = document.getElementById('scrMessage');
