@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airport Search</title>
+    <title>Enhanced Airport Search</title>
     <style>
-        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
             color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Header Styles */
         header {
             background: linear-gradient(135deg, #007BFF, #0056b3);
             color: white;
@@ -29,14 +28,6 @@
             font-weight: bold;
         }
 
-        header nav a {
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        /* Container Styles */
         .container {
             max-width: 600px;
             margin: 20px auto;
@@ -45,7 +36,6 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             padding: 20px;
             text-align: center;
-            overflow: hidden;
         }
 
         h2 {
@@ -54,7 +44,6 @@
             margin-bottom: 20px;
         }
 
-        /* Input Styles */
         input {
             width: calc(100% - 20px);
             padding: 15px;
@@ -72,7 +61,6 @@
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
         }
 
-        /* Button Styles */
         button {
             padding: 12px 20px;
             font-size: 1rem;
@@ -83,6 +71,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.3s ease, transform 0.2s ease;
+            margin: 5px;
         }
 
         button:hover {
@@ -90,8 +79,7 @@
             transform: translateY(-2px);
         }
 
-        /* Results Section */
-        .results {
+        .results, .recent-searches {
             margin-top: 20px;
             text-align: left;
             background: #f9f9ff;
@@ -100,53 +88,70 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .results p {
+        .results p, .recent-searches p {
             margin: 10px 0;
             font-size: 1rem;
             line-height: 1.5;
             color: #555;
         }
 
-        .results p strong {
+        .results p strong, .recent-searches h3 {
             color: #007BFF;
         }
 
-        /* Footer Styles */
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            color: #777;
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 5px;
+            cursor: pointer;
             background: #f4f4f9;
-            margin-top: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        ul li:hover {
+            background: #ddd;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        .dark-mode .container {
+            background: #1f1f1f;
+        }
+
+        .dark-mode button {
+            background: #333;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Airport Search</h1>
-        <nav>
-            <a href="index.html">Go Back to Main Page</a>
-        </nav>
+        <h1>Enhanced Airport Search</h1>
     </header>
 
     <div class="container">
+        <button id="themeToggle">Toggle Dark Mode</button>
         <h2>Search for an Airport</h2>
         <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
+        <ul id="autocompleteList" style="display: none;"></ul>
         <button onclick="searchAirport()">Search</button>
-
-        <!-- Results Section -->
+        <button onclick="downloadPDF()">Download Results as PDF</button>
         <div id="results" class="results"></div>
     </div>
 
-    <footer>
-        <p>© 2023 Airport Search. All rights reserved.</p>
-    </footer>
+    <div id="recentSearches" class="recent-searches container"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         let airportEmails = {};
+        let recentSearches = [];
 
-        // Load data from JSON file
         async function loadAirportData() {
             try {
                 const response = await fetch('assets/emails.json');
@@ -155,36 +160,91 @@
                 }
                 airportEmails = await response.json();
                 console.log('Airport data loaded:', airportEmails);
+                autocompleteAirportCodes();
             } catch (error) {
                 console.error('Error loading data from JSON file:', error);
                 alert('Failed to load airport data.');
             }
         }
 
-        // Search for airport
+        function autocompleteAirportCodes() {
+            const input = document.getElementById('airportCode');
+            const autocompleteList = document.getElementById('autocompleteList');
+            input.addEventListener('input', () => {
+                const query = input.value.toUpperCase();
+                autocompleteList.innerHTML = '';
+                autocompleteList.style.display = query ? 'block' : 'none';
+                if (query) {
+                    const matches = Object.keys(airportEmails).filter(code =>
+                        code.startsWith(query)
+                    );
+                    matches.forEach(code => {
+                        const item = document.createElement('li');
+                        item.textContent = code;
+                        item.addEventListener('click', () => {
+                            input.value = code;
+                            autocompleteList.innerHTML = '';
+                            autocompleteList.style.display = 'none';
+                        });
+                        autocompleteList.appendChild(item);
+                    });
+                }
+            });
+            document.addEventListener('click', () => {
+                autocompleteList.innerHTML = '';
+                autocompleteList.style.display = 'none';
+            });
+        }
+
+        function updateRecentSearches(airportCode) {
+            if (!recentSearches.includes(airportCode)) {
+                if (recentSearches.length === 5) recentSearches.shift();
+                recentSearches.push(airportCode);
+            }
+            renderRecentSearches();
+        }
+
+        function renderRecentSearches() {
+            const recentDiv = document.getElementById('recentSearches');
+            recentDiv.innerHTML = `<h3>Recently Searched Airports</h3>`;
+            recentSearches.forEach(code => {
+                recentDiv.innerHTML += `<p>${code}</p>`;
+            });
+        }
+
         function searchAirport() {
             const airportCode = document.getElementById('airportCode').value.toUpperCase();
             const resultsDiv = document.getElementById('results');
             const airport = airportEmails[airportCode];
 
             if (airport) {
+                updateRecentSearches(airportCode);
                 resultsDiv.innerHTML = `
                     <p><strong>Code:</strong> ${airportCode}</p>
                     <p><strong>Name:</strong> ${airport.airportName}</p>
                     <p><strong>Country:</strong> ${airport.country}</p>
                     <p><strong>Email:</strong> ${airport.email}</p>
                     <p><strong>Contact:</strong> ${airport.contactNumber}</p>
-                    <p><strong>Summer Level:</strong> ${airport.summerLevel}</p>
-                    <p><strong>Winter Level:</strong> ${airport.winterLevel}</p>
-                    <p><strong>GCR:</strong> ${airport.gcr}</p>
-                    <p><strong>PPR:</strong> ${airport.ppr}</p>
                 `;
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
             }
         }
 
-        // Load data on page load
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const resultsDiv = document.getElementById('results').textContent;
+
+            doc.text(resultsDiv, 10, 10);
+            doc.save('airport-search-results.pdf');
+        }
+
+        const toggleButton = document.getElementById('themeToggle');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
         window.onload = loadAirportData;
     </script>
 </body>
