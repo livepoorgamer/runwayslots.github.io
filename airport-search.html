@@ -52,7 +52,7 @@
         button:hover {
             background-color: #0056b3;
         }
-        .results {
+        .results, .add-container {
             margin-top: 20px;
             background: #fff;
             padding: 10px;
@@ -63,6 +63,7 @@
             margin: 5px 0;
         }
         .form-section {
+            display: none; /* Initially hidden */
             margin-top: 20px;
         }
     </style>
@@ -80,9 +81,13 @@
         <h2>Search for Airport</h2>
         <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
         <button onclick="searchAirport()">Search</button>
+        <button onclick="showAddForm()">Add New Airport</button>
+
+        <!-- Results Section -->
         <div id="results" class="results"></div>
 
-        <div class="form-section">
+        <!-- Form Section -->
+        <div class="form-section" id="formSection">
             <h2>Manage Airport Contacts</h2>
             <form id="airportForm">
                 <input type="text" id="airportName" placeholder="Airport Name">
@@ -108,16 +113,11 @@
                     <option value="YES">PPR: YES</option>
                     <option value="NO">PPR: NO</option>
                 </select>
-                <button type="button" onclick="addOrUpdateAirport()">Add / Update Airport</button>
+                <button type="button" onclick="addOrUpdateAirport()">Save Airport</button>
             </form>
         </div>
-
-        <div class="form-section">
-            <h2>Remove Airport Contact</h2>
-            <input type="text" id="removeAirportCode" placeholder="Enter Airport Code to Remove">
-            <button onclick="removeAirport()">Remove Airport</button>
-        </div>
     </div>
+
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -134,8 +134,10 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Load data from Firebase
+        // Global variable to store airport data
         let airportEmails = {};
+
+        // Load data from Firebase
         async function loadAirportData() {
             try {
                 const snapshot = await database.ref('airports').once('value');
@@ -147,6 +149,16 @@
             }
         }
 
+        // Show the form to add new airport data
+        function showAddForm() {
+            document.getElementById('formSection').style.display = 'block';
+        }
+
+        // Hide the form
+        function hideAddForm() {
+            document.getElementById('formSection').style.display = 'none';
+        }
+
         // Search for airport
         function searchAirport() {
             const airportCode = document.getElementById('airportCode').value.toUpperCase();
@@ -154,7 +166,17 @@
             const airport = airportEmails[airportCode];
 
             if (airport) {
-                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${JSON.stringify(airport, null, 2)}</p>`;
+                resultsDiv.innerHTML = `
+                    <p><strong>Code:</strong> ${airportCode}</p>
+                    <p><strong>Name:</strong> ${airport.airportName}</p>
+                    <p><strong>Country:</strong> ${airport.country}</p>
+                    <p><strong>Email:</strong> ${airport.email}</p>
+                    <p><strong>Contact:</strong> ${airport.contactNumber}</p>
+                    <p><strong>Summer Level:</strong> ${airport.summerLevel}</p>
+                    <p><strong>Winter Level:</strong> ${airport.winterLevel}</p>
+                    <p><strong>GCR:</strong> ${airport.gcr}</p>
+                    <p><strong>PPR:</strong> ${airport.ppr}</p>
+                `;
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
             }
@@ -177,26 +199,12 @@
             database.ref('airports/' + airportCode).set(airportData)
                 .then(() => {
                     alert(`Airport ${airportCode} has been added/updated.`);
-                    loadAirportData(); // Refresh local data
+                    loadAirportData(); // Refresh data
+                    hideAddForm(); // Hide the form
                 })
                 .catch(error => {
                     console.error('Error updating airport data:', error);
                     alert('Error updating airport data.');
-                });
-        }
-
-        // Remove airport
-        function removeAirport() {
-            const airportCode = document.getElementById('removeAirportCode').value.toUpperCase();
-
-            database.ref('airports/' + airportCode).remove()
-                .then(() => {
-                    alert(`Airport ${airportCode} has been removed.`);
-                    loadAirportData(); // Refresh local data
-                })
-                .catch(error => {
-                    console.error('Error removing airport:', error);
-                    alert('Error removing airport.');
                 });
         }
 
