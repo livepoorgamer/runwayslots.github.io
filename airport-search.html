@@ -5,66 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airport Search</title>
     <style>
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            padding: 0;
             background-color: #f4f4f9;
-        }
-        header {
-            background-color: #007BFF;
-            color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: left;
-        }
-        h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
             color: #333;
         }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
             color: white;
-            background-color: #007BFF;
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        header nav a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        /* Input Styles */
+        input {
+            width: calc(100% - 20px);
+            padding: 15px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Button Styles */
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: white;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
+
         button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0056b3, #003f7f);
+            transform: translateY(-2px);
         }
-        .results, .add-container {
+
+        /* Results Section */
+        .results {
             margin-top: 20px;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            background: #f9f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .results p {
-            margin: 5px 0;
+            margin: 10px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #555;
         }
-        .form-section {
-            display: none; /* Initially hidden */
-            margin-top: 20px;
+
+        .results p strong {
+            color: #007BFF;
+        }
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #777;
+            background: #f4f4f9;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -72,50 +126,22 @@
     <header>
         <h1>Airport Search</h1>
         <nav>
-            <a href="index.html" style="color: white; text-decoration: none;">Go Back to Main Page</a>
+            <a href="index.html">Go Back to Main Page</a>
         </nav>
     </header>
 
     <div class="container">
-        <h2>Search for Airport</h2>
+        <h2>Search for an Airport</h2>
         <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
         <button onclick="searchAirport()">Search</button>
-        <button onclick="showAddForm()">Add New Airport</button>
 
         <!-- Results Section -->
         <div id="results" class="results"></div>
-
-        <!-- Form Section -->
-        <div class="form-section" id="formSection">
-            <h2>Add / Update Airport</h2>
-            <form id="airportForm">
-                <input type="text" id="airportName" placeholder="Airport Name">
-                <input type="text" id="country" placeholder="Country">
-                <input type="text" id="airportCodeInput" placeholder="Airport Code">
-                <input type="email" id="email" placeholder="Email Address">
-                <input type="text" id="contactNumber" placeholder="Contact Number">
-                <select id="summerLevel">
-                    <option value="1">Summer Level 1</option>
-                    <option value="2">Summer Level 2</option>
-                    <option value="3">Summer Level 3</option>
-                </select>
-                <select id="winterLevel">
-                    <option value="1">Winter Level 1</option>
-                    <option value="2">Winter Level 2</option>
-                    <option value="3">Winter Level 3</option>
-                </select>
-                <select id="gcr">
-                    <option value="YES">GCR: YES</option>
-                    <option value="NO">GCR: NO</option>
-                </select>
-                <select id="ppr">
-                    <option value="YES">PPR: YES</option>
-                    <option value="NO">PPR: NO</option>
-                </select>
-                <button type="button" onclick="addOrUpdateAirport()">Save Airport</button>
-            </form>
-        </div>
     </div>
+
+    <footer>
+        <p>© 2023 Airport Search. All rights reserved.</p>
+    </footer>
 
     <script>
         let airportEmails = {};
@@ -133,16 +159,6 @@
                 console.error('Error loading data from JSON file:', error);
                 alert('Failed to load airport data.');
             }
-        }
-
-        // Show the form to add new airport data
-        function showAddForm() {
-            document.getElementById('formSection').style.display = 'block';
-        }
-
-        // Hide the form
-        function hideAddForm() {
-            document.getElementById('formSection').style.display = 'none';
         }
 
         // Search for airport
@@ -166,28 +182,6 @@
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
             }
-        }
-
-        // Add or update airport
-        function addOrUpdateAirport() {
-            const airportCode = document.getElementById('airportCodeInput').value.toUpperCase();
-            const airportData = {
-                airportName: document.getElementById('airportName').value,
-                country: document.getElementById('country').value,
-                email: document.getElementById('email').value,
-                contactNumber: document.getElementById('contactNumber').value,
-                summerLevel: document.getElementById('summerLevel').value,
-                winterLevel: document.getElementById('winterLevel').value,
-                gcr: document.getElementById('gcr').value,
-                ppr: document.getElementById('ppr').value,
-            };
-
-            // Update the local object
-            airportEmails[airportCode] = airportData;
-
-            console.log(`Airport ${airportCode} added/updated. Current data:`, airportEmails);
-            alert(`Airport ${airportCode} has been added/updated.`);
-            hideAddForm(); // Hide the form
         }
 
         // Load data on page load
