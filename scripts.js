@@ -149,25 +149,35 @@ SI ${slotAction} REQ ${airportCode}`;
         URL.revokeObjectURL(url);
     }
 
-    function emailSCR() {
-        const scrMessage = document.getElementById('scrMessage').textContent;
-        const airportCode = document.getElementById("airportCode").value.toUpperCase();
-        const email = airportEmails[airportCode];
+    async function loadEmailData() {
+    try {
+        const response = await fetch('assets/emails.json');
+        airportEmails = await response.json();
+        console.log('Email data loaded:', airportEmails); // Debug loaded data
+    } catch (error) {
+        console.error('Error loading email data:', error);
+    }
+}
 
-        if (!scrMessage) {
-            alert("No SCR message to email. Generate it first.");
-            return;
-        }
+function emailSCR() {
+    const scrMessage = document.getElementById('scrMessage').textContent;
+    const airportCode = document.getElementById("airportCode").value.toUpperCase();
+    const email = airportEmails[airportCode];
+    const ccEmail = "slotdesk@ryanair.com"; // Permanent CC email
 
-        if (!email) {
-            alert(`No email found for airport code: ${airportCode}`);
-            return;
-        }
-
-        const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
-        const body = encodeURIComponent(scrMessage);
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    if (!scrMessage) {
+        alert("No SCR message to email. Generate it first.");
+        return;
     }
 
-    window.onload = loadEmailData;
+    if (!email) {
+        alert(`No email found for airport code: ${airportCode}`);
+        return;
+    }
 
+    const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
+    const body = encodeURIComponent(scrMessage);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+}
+
+window.onload = loadEmailData;
