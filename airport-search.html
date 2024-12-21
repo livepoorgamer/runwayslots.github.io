@@ -68,8 +68,8 @@
     </style>
 </head>
 <body>
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
     <header>
         <h1>Airport Search</h1>
         <nav>
@@ -119,86 +119,72 @@
         </div>
     </div>
     <script>
-          const firebaseConfig = {
-    apiKey: "AIzaSyCJC-y9pgaUqlTjTt5L6UMF0EepHjQY8xw",
-    authDomain: "airport-search-eacb2.firebaseapp.com",
-    databaseURL: "https://airport-search-eacb2-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "airport-search-eacb2",
-    storageBucket: "airport-search-eacb2.firebasestorage.app",
-    messagingSenderId: "497575046356",
-    appId: "1:497575046356:web:987be64b49174cf73bdf41",
-    measurementId: "G-99R4BETY2Z"
-  };
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJC-y9pgaUqlTjTt5L6UMF0EepHjQY8xw",
+            authDomain: "airport-search-eacb2.firebaseapp.com",
+            databaseURL: "https://airport-search-eacb2-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "airport-search-eacb2",
+            storageBucket: "airport-search-eacb2.appspot.com",
+            messagingSenderId: "497575046356",
+            appId: "1:497575046356:web:987be64b49174cf73bdf41",
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Load data from Firebase
         let airportEmails = {};
-
-        // Load the airport emails from JSON
         async function loadAirportData() {
-            try {
-                const response = await fetch('assets/emails.json');
-                airportEmails = await response.json();
-                console.log('Airport data loaded:', airportEmails);
-            } catch (error) {
-                console.error('Error loading airport data:', error);
-            }
+            const snapshot = await database.ref('airports').once('value');
+            airportEmails = snapshot.val() || {};
+            console.log('Airport data loaded:', airportEmails);
         }
 
-        // Search for the airport contact information
+        // Search for airport
         function searchAirport() {
             const airportCode = document.getElementById('airportCode').value.toUpperCase();
             const resultsDiv = document.getElementById('results');
+            const airport = airportEmails[airportCode];
 
-            if (airportCode in airportEmails) {
-                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${JSON.stringify(airportEmails[airportCode], null, 2)}</p>`;
+            if (airport) {
+                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${JSON.stringify(airport, null, 2)}</p>`;
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
             }
         }
 
-        // Add or update airport information
+        // Add or update airport
         function addOrUpdateAirport() {
-            const airportName = document.getElementById('airportName').value;
-            const country = document.getElementById('country').value;
             const airportCode = document.getElementById('airportCodeInput').value.toUpperCase();
-            const email = document.getElementById('email').value;
-            const contactNumber = document.getElementById('contactNumber').value;
-            const summerLevel = document.getElementById('summerLevel').value;
-            const winterLevel = document.getElementById('winterLevel').value;
-            const gcr = document.getElementById('gcr').value;
-            const ppr = document.getElementById('ppr').value;
-
-            airportEmails[airportCode] = {
-                airportName,
-                country,
-                email,
-                contactNumber,
-                summerLevel,
-                winterLevel,
-                gcr,
-                ppr,
+            const airportData = {
+                airportName: document.getElementById('airportName').value,
+                country: document.getElementById('country').value,
+                email: document.getElementById('email').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                summerLevel: document.getElementById('summerLevel').value,
+                winterLevel: document.getElementById('winterLevel').value,
+                gcr: document.getElementById('gcr').value,
+                ppr: document.getElementById('ppr').value,
             };
 
-            alert(`Airport ${airportCode} has been added/updated.`);
+            database.ref('airports/' + airportCode).set(airportData)
+                .then(() => alert(`Airport ${airportCode} has been added/updated.`))
+                .catch(error => alert('Error updating airport data: ' + error));
         }
 
-        // Remove an airport by its code
+        // Remove airport
         function removeAirport() {
             const airportCode = document.getElementById('removeAirportCode').value.toUpperCase();
 
-            if (airportCode in airportEmails) {
-                delete airportEmails[airportCode];
-                alert(`Airport ${airportCode} has been removed.`);
-            } else {
-                alert(`No airport found with code: ${airportCode}`);
-            }
+            database.ref('airports/' + airportCode).remove()
+                .then(() => alert(`Airport ${airportCode} has been removed.`))
+                .catch(error => alert('Error removing airport data: ' + error));
         }
 
-        // Load the airport data when the page loads
+        // Load data on page load
         window.onload = loadAirportData;
     </script>
 </body>
 </html>
-
