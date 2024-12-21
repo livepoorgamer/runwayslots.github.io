@@ -1,9 +1,72 @@
 {
-    "VLC": "vlc.gtr@aena.es; vlcops@azulhandling.com; r4occ@ryanair.com",
-    "MAD": "mad.gtr@aena.es; madops@azulhandling.com; r4occ@ryanair.com",
-    "BCN": "bcnops@azulhandling.com; bcn.gtr@aena.es; r4occ@ryanair.com",
-    "LHR": "contact@lhrairport.com",
-    "CDG": "slots@cohor.org",
-    "BUD": "airport.ops@bud.hu; budcoord@budcoord.hu",
-    "BGY": "slot@assoclearance.it; rit.ops@bgyis.it; programmazione@sacbo.it; cos@sacbo.it; sromeo@sacbo.it"
+    "VLC": {
+        "airportName": "Valencia Airport",
+        "country": "Spain",
+        "email": "vlc.gtr@aena.es; vlcops@azulhandling.com; r4occ@ryanair.com",
+        "contactNumber": "Not Available",
+        "summerLevel": "1",
+        "winterLevel": "2",
+        "gcr": "YES",
+        "ppr": "NO"
+    },
+    "MAD": {
+        "airportName": "Madrid-Barajas Airport",
+        "country": "Spain",
+        "email": "mad.gtr@aena.es; madops@azulhandling.com; r4occ@ryanair.com",
+        "contactNumber": "Not Available",
+        "summerLevel": "2",
+        "winterLevel": "2",
+        "gcr": "YES",
+        "ppr": "NO"
+    },
+    "BCN": {
+        "airportName": "Barcelona El Prat Airport",
+        "country": "Spain",
+        "email": "bcnops@azulhandling.com; bcn.gtr@aena.es; r4occ@ryanair.com",
+        "contactNumber": "Not Available",
+        "summerLevel": "2",
+        "winterLevel": "2",
+        "gcr": "YES",
+        "ppr": "YES"
+    },
+    "LHR": {
+        "airportName": "Heathrow Airport",
+        "country": "United Kingdom",
+        "email": "contact@lhrairport.com",
+        "contactNumber": "Not Available",
+        "summerLevel": "3",
+        "winterLevel": "3",
+        "gcr": "YES",
+        "ppr": "NO"
+    },
+    "CDG": {
+        "airportName": "Charles de Gaulle Airport",
+        "country": "France",
+        "email": "slots@cohor.org",
+        "contactNumber": "Not Available",
+        "summerLevel": "3",
+        "winterLevel": "3",
+        "gcr": "YES",
+        "ppr": "YES"
+    },
+    "BUD": {
+        "airportName": "Budapest Ferenc Liszt International Airport",
+        "country": "Hungary",
+        "email": "airport.ops@bud.hu; budcoord@budcoord.hu",
+        "contactNumber": "Not Available",
+        "summerLevel": "2",
+        "winterLevel": "2",
+        "gcr": "YES",
+        "ppr": "YES"
+    },
+    "BGY": {
+        "airportName": "Orio al Serio International Airport",
+        "country": "Italy",
+        "email": "slot@assoclearance.it; rit.ops@bgyis.it; programmazione@sacbo.it; cos@sacbo.it; sromeo@sacbo.it",
+        "contactNumber": "Not Available",
+        "summerLevel": "1",
+        "winterLevel": "1",
+        "gcr": "NO",
+        "ppr": "YES"
+    }
 }
