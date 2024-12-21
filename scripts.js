@@ -137,7 +137,7 @@ function showLog() {
 function emailSCR() {
     const scrMessage = document.getElementById('scrMessage').textContent;
     const airportCode = document.getElementById("airportCode").value.toUpperCase();
-    const email = airportEmails[airportCode];
+    const emailList = airportEmails[airportCode]?.email; // Retrieve 'email' field from JSON
     const ccEmail = "slotdesk@ryanair.com"; // Permanent CC email
 
     if (!scrMessage) {
@@ -145,14 +145,14 @@ function emailSCR() {
         return;
     }
 
-    if (!email) {
+    if (!emailList) {
         alert(`No email found for airport code: ${airportCode}`);
         return;
     }
 
     const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
     const body = encodeURIComponent(scrMessage);
-    const mailtoLink = `mailto:${email}?cc=${ccEmail}&subject=${subject}&body=${body}`;
+    const mailtoLink = `mailto:${emailList}?cc=${ccEmail}&subject=${subject}&body=${body}`;
     
     window.location.href = mailtoLink;
 }
