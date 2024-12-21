@@ -32,10 +32,15 @@ function login() {
 
 // Show the appropriate form based on the action selected
 function createForm(action) {
-    slotAction = action.toUpperCase(); // Set the slot action
-    const formSection = document.getElementById('form-section');
-    document.getElementById('form-title').textContent = `${action} Form`; // Update form title
-    formSection.style.display = 'block'; // Show the form
+    if (action.toUpperCase() === "CHANGE SLOT") {
+        document.getElementById('changeSlotForm').style.display = 'block'; // Show Change Slot Form
+        document.getElementById('form-section').style.display = 'none'; // Hide default form
+    } else {
+        document.getElementById('changeSlotForm').style.display = 'none'; // Hide Change Slot Form
+        document.getElementById('form-section').style.display = 'block'; // Show default form
+    }
+    document.getElementById('form-title').textContent = `${action} Form`; // Update the form title dynamically
+    slotAction = action.toUpperCase(); // Set the slot action globally
 }
 
 function scrollToTop() {
@@ -126,6 +131,52 @@ SI ${slotAction} REQ ${airportCode}`;
         slotAction,
         scrMessage: scrMessage.trim()
     });
+}
+
+// Generate SCR message for Change Slot
+function showChangeSlotSCR() {
+    const slotType = document.getElementById('slotType').value;
+    const airportCode = document.getElementById('airportCode').value.toUpperCase();
+    const flightNumber = document.getElementById('flightNumber').value;
+    const dateInput = document.getElementById('date').value;
+    const numberOfSeats = document.getElementById('numberOfSeats').value.padStart(3, '0');
+    const aircraftType = document.getElementById('aircraftType').value.toUpperCase();
+    const time = document.getElementById('time').value.padStart(4, '0');
+    const newTime = document.getElementById('newTime').value.padStart(4, '0');
+    const destinationOrigin = document.getElementById('destinationOrigin').value.toUpperCase();
+    const serviceType = document.getElementById('serviceType').value;
+
+    if (!airportCode || !flightNumber || !dateInput || !numberOfSeats || !aircraftType || !time || !newTime || !destinationOrigin) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const date = new Date(dateInput);
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const month = monthNames[date.getMonth()];
+    const formattedDate = `${day}${month}`;
+
+    let scrMessage = `
+SCR 
+W24 
+${formattedDate} 
+${airportCode} 
+`;
+
+    if (slotType === "ARRIVAL") {
+        scrMessage += `C ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType} 
+R ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${newTime}${destinationOrigin} ${serviceType} 
+SI SLOT CHG REQ ${airportCode}`;
+    } else if (slotType === "DEPARTURE") {
+        scrMessage += `C ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${destinationOrigin}${time} ${serviceType} 
+R ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${destinationOrigin}${newTime} ${serviceType} 
+SI SLOT CHG REQ ${airportCode}`;
+    }
+
+    const scrMessageDiv = document.getElementById('scrMessage');
+    scrMessageDiv.textContent = scrMessage.trim();
+    scrMessageDiv.style.display = 'block';
 }
 
 // Show logs in table format
