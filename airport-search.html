@@ -28,6 +28,12 @@
             font-weight: bold;
         }
 
+        header nav a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .container {
             max-width: 600px;
             margin: 20px auto;
@@ -133,6 +139,9 @@
 <body>
     <header>
         <h1>Enhanced Airport Search</h1>
+        <nav>
+            <a href="index.html">Back to Home Page</a>
+        </nav>
     </header>
 
     <div class="container">
@@ -141,13 +150,11 @@
         <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
         <ul id="autocompleteList" style="display: none;"></ul>
         <button onclick="searchAirport()">Search</button>
-        <button onclick="downloadPDF()">Download Results as PDF</button>
         <div id="results" class="results"></div>
     </div>
 
     <div id="recentSearches" class="recent-searches container"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         let airportEmails = {};
         let recentSearches = [];
@@ -229,15 +236,6 @@
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
             }
-        }
-
-        async function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const resultsDiv = document.getElementById('results').textContent;
-
-            doc.text(resultsDiv, 10, 10);
-            doc.save('airport-search-results.pdf');
         }
 
         const toggleButton = document.getElementById('themeToggle');
