@@ -21,20 +21,21 @@ function login() {
     const errorMessage = document.getElementById('errorMessage');
 
     if (username === "root" && password === "root") {
-        document.querySelector('.login-container').style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
+        document.querySelector('.login-container').style.display = 'none'; // Hide login
+        document.querySelector('.container').style.display = 'block'; // Show main container
+        document.getElementById('form-section').style.display = 'none'; // Ensure form is hidden after login
         document.body.style.backgroundColor = '#f4f4f9';
     } else {
         errorMessage.style.display = 'block';
     }
 }
 
-// Create and show the form based on action
+// Show the appropriate form based on the action selected
 function createForm(action) {
-    slotAction = action.toUpperCase();
+    slotAction = action.toUpperCase(); // Set the slot action
     const formSection = document.getElementById('form-section');
-    document.getElementById('form-title').textContent = `${action} Form`;
-    formSection.style.display = 'block';
+    document.getElementById('form-title').textContent = `${action} Form`; // Update form title
+    formSection.style.display = 'block'; // Show the form
 }
 
 // Validate seats input length
