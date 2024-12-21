@@ -91,56 +91,110 @@
         <div id="scrMessage"></div>
     </div>
     <div id="changeSlotForm" class="condensed-form" style="display: none;">
-        <h3 id="form-title">Change Slot Form</h3>
-        <div class="form-group">
-            <label for="slotType">Slot Type:</label>
-            <select id="slotType" onchange="updateSlotType()">
-                <option value="ARRIVAL">ARRIVAL</option>
-                <option value="DEPARTURE">DEPARTURE</option>
-            </select>
+    <h3 id="form-title">Change Slot Form</h3>
+    <div class="float-container">
+        <!-- Old Info Section -->
+        <div class="float-child">
+            <h4 class="green">Old Info</h4>
+            <div class="form-group">
+                <label for="slotType">Slot Type:</label>
+                <select id="slotTypeOld" onchange="updateSlotType()">
+                    <option value="ARRIVAL">ARRIVAL</option>
+                    <option value="DEPARTURE">DEPARTURE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="airportCodeOld">Airport Code:</label>
+                <input type="text" id="airportCodeOld" maxlength="3" placeholder="e.g., BGY">
+            </div>
+            <div class="form-group">
+                <label for="flightNumberOld">Flight Number:</label>
+                <input type="text" id="flightNumberOld" placeholder="e.g., FR1232">
+            </div>
+            <div class="form-group">
+                <label for="dateOld">Date:</label>
+                <input type="date" id="dateOld">
+            </div>
+            <div class="form-group">
+                <label for="numberOfSeatsOld">Seats:</label>
+                <input type="number" id="numberOfSeatsOld" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
+            </div>
+            <div class="form-group">
+                <label for="aircraftTypeOld">Aircraft:</label>
+                <input type="text" id="aircraftTypeOld" placeholder="e.g., 73H">
+            </div>
+            <div class="form-group">
+                <label for="timeOld">Time:</label>
+                <input type="text" id="timeOld" maxlength="4" placeholder="e.g., 1150">
+            </div>
+            <div class="form-group">
+                <label for="destinationOriginOld">Destination/Origin:</label>
+                <input type="text" id="destinationOriginOld" placeholder="e.g., STN">
+            </div>
+            <div class="form-group">
+                <label for="serviceTypeOld">Service:</label>
+                <select id="serviceTypeOld">
+                    <option value="P">P</option>
+                    <option value="J">J</option>
+                    <option value="D">D</option>
+                    <option value="K">K</option>
+                    <option value="X">X</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="airportCode">Airport Code:</label>
-            <input type="text" id="airportCode" maxlength="3" placeholder="e.g., BGY">
+
+        <!-- New Info Section -->
+        <div class="float-child">
+            <h4 class="blue">New Info</h4>
+            <div class="form-group">
+                <label for="slotTypeNew">Slot Type:</label>
+                <select id="slotTypeNew">
+                    <option value="ARRIVAL">ARRIVAL</option>
+                    <option value="DEPARTURE">DEPARTURE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="airportCodeNew">Airport Code:</label>
+                <input type="text" id="airportCodeNew" maxlength="3" placeholder="e.g., BGY">
+            </div>
+            <div class="form-group">
+                <label for="flightNumberNew">Flight Number:</label>
+                <input type="text" id="flightNumberNew" placeholder="e.g., FR1232">
+            </div>
+            <div class="form-group">
+                <label for="dateNew">Date:</label>
+                <input type="date" id="dateNew">
+            </div>
+            <div class="form-group">
+                <label for="numberOfSeatsNew">Seats:</label>
+                <input type="number" id="numberOfSeatsNew" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
+            </div>
+            <div class="form-group">
+                <label for="aircraftTypeNew">Aircraft:</label>
+                <input type="text" id="aircraftTypeNew" placeholder="e.g., 73H">
+            </div>
+            <div class="form-group">
+                <label for="timeNew">Time:</label>
+                <input type="text" id="timeNew" maxlength="4" placeholder="e.g., 1150">
+            </div>
+            <div class="form-group">
+                <label for="destinationOriginNew">Destination/Origin:</label>
+                <input type="text" id="destinationOriginNew" placeholder="e.g., STN">
+            </div>
+            <div class="form-group">
+                <label for="serviceTypeNew">Service:</label>
+                <select id="serviceTypeNew">
+                    <option value="P">P</option>
+                    <option value="J">J</option>
+                    <option value="D">D</option>
+                    <option value="K">K</option>
+                    <option value="X">X</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="flightNumber">Flight Number:</label>
-            <input type="text" id="flightNumber" placeholder="e.g., FR1232">
-        </div>
-        <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" id="date">
-        </div>
-        <div class="form-group">
-            <label for="numberOfSeats">Seats:</label>
-            <input type="number" id="numberOfSeats" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
-        </div>
-        <div class="form-group">
-            <label for="aircraftType">Aircraft:</label>
-            <input type="text" id="aircraftType" placeholder="e.g., 73H">
-        </div>
-        <div class="form-group">
-            <label for="time">Original Time:</label>
-            <input type="text" id="time" maxlength="4" placeholder="e.g., 1150">
-        </div>
-        <div class="form-group">
-            <label for="newTime">New Time:</label>
-            <input type="text" id="newTime" maxlength="4" placeholder="e.g., 1300">
-        </div>
-        <div class="form-group">
-            <label for="destinationOrigin">Destination/Origin:</label>
-            <input type="text" id="destinationOrigin" placeholder="e.g., STN">
-        </div>
-        <div class="form-group">
-            <label for="serviceType">Service:</label>
-            <select id="serviceType">
-                <option value="P">P</option>
-                <option value="J">J</option>
-                <option value="D">D</option>
-                <option value="K">K</option>
-                <option value="X">X</option>
-            </select>
-        </div>
+    </div>
+    <button onclick="showChangeSlotSCR()">SHOW SCR</button>
+</div>
         <button onclick="showChangeSlotSCR()">SHOW SCR</button>
         <div id="scrMessage" style="margin-top: 20px; white-space: pre-wrap; font-family: monospace; display: none;"></div>
     </div>
