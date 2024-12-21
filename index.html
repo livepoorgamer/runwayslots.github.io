@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCR Management System</title>
-   <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="login-container">
@@ -89,6 +89,60 @@
         <button onclick="showSCR()">SHOW SCR</button>
         <button onclick="emailSCR()">EMAIL SCR</button>
         <div id="scrMessage"></div>
+    </div>
+    <div id="changeSlotForm" class="condensed-form" style="display: none;">
+        <h3 id="form-title">Change Slot Form</h3>
+        <div class="form-group">
+            <label for="slotType">Slot Type:</label>
+            <select id="slotType" onchange="updateSlotType()">
+                <option value="ARRIVAL">ARRIVAL</option>
+                <option value="DEPARTURE">DEPARTURE</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="airportCode">Airport Code:</label>
+            <input type="text" id="airportCode" maxlength="3" placeholder="e.g., BGY">
+        </div>
+        <div class="form-group">
+            <label for="flightNumber">Flight Number:</label>
+            <input type="text" id="flightNumber" placeholder="e.g., FR1232">
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date">
+        </div>
+        <div class="form-group">
+            <label for="numberOfSeats">Seats:</label>
+            <input type="number" id="numberOfSeats" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
+        </div>
+        <div class="form-group">
+            <label for="aircraftType">Aircraft:</label>
+            <input type="text" id="aircraftType" placeholder="e.g., 73H">
+        </div>
+        <div class="form-group">
+            <label for="time">Original Time:</label>
+            <input type="text" id="time" maxlength="4" placeholder="e.g., 1150">
+        </div>
+        <div class="form-group">
+            <label for="newTime">New Time:</label>
+            <input type="text" id="newTime" maxlength="4" placeholder="e.g., 1300">
+        </div>
+        <div class="form-group">
+            <label for="destinationOrigin">Destination/Origin:</label>
+            <input type="text" id="destinationOrigin" placeholder="e.g., STN">
+        </div>
+        <div class="form-group">
+            <label for="serviceType">Service:</label>
+            <select id="serviceType">
+                <option value="P">P</option>
+                <option value="J">J</option>
+                <option value="D">D</option>
+                <option value="K">K</option>
+                <option value="X">X</option>
+            </select>
+        </div>
+        <button onclick="showChangeSlotSCR()">SHOW SCR</button>
+        <div id="scrMessage" style="margin-top: 20px; white-space: pre-wrap; font-family: monospace; display: none;"></div>
     </div>
     <div id="logContainer" class="log-section">
         <h3>Message Log</h3>
