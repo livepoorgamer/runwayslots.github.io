@@ -1,4 +1,3 @@
-<script>
     let slotAction = '';
     let airportEmails = {}; // Store emails loaded from JSON
     const logData = [];
@@ -171,4 +170,4 @@ SI ${slotAction} REQ ${airportCode}`;
     }
 
     window.onload = loadEmailData;
-</script>
+
