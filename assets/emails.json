@@ -68,5 +68,27 @@
         "winterLevel": "3",
         "gcr": "NO",
         "ppr": "NO"
+    },
+    "STN": {
+        "airportName": "Standsted Airport",
+        "country": "United Kingdom",
+        "email": "lonacxh@acl-uk.org",
+        "contactNumber": "Not Available",
+        "summerLevel": "3",
+        "winterLevel": "3",
+        "gcr": "NO",
+        "ppr": "NO"
+        
+     },
+    "ABZ": {
+        "airportName": "Aberdeen International Airport",
+        "country": "United Kingdom",
+        "email": "lonacxh@acl-uk.org",
+        "contactNumber": "Not Available",
+        "summerLevel": "2",
+        "winterLevel": "2",
+        "gcr": "NO",
+        "ppr": "NO"
+        
     }
 }
