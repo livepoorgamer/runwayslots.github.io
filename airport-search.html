@@ -119,6 +119,20 @@
         </div>
     </div>
     <script>
+          const firebaseConfig = {
+    apiKey: "AIzaSyCJC-y9pgaUqlTjTt5L6UMF0EepHjQY8xw",
+    authDomain: "airport-search-eacb2.firebaseapp.com",
+    databaseURL: "https://airport-search-eacb2-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "airport-search-eacb2",
+    storageBucket: "airport-search-eacb2.firebasestorage.app",
+    messagingSenderId: "497575046356",
+    appId: "1:497575046356:web:987be64b49174cf73bdf41",
+    measurementId: "G-99R4BETY2Z"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
         let airportEmails = {};
 
         // Load the airport emails from JSON
