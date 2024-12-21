@@ -79,7 +79,7 @@
         "gcr": "NO",
         "ppr": "NO"
         
-     },
+    },
     "ABZ": {
         "airportName": "Aberdeen International Airport",
         "country": "United Kingdom",
@@ -87,6 +87,16 @@
         "contactNumber": "Not Available",
         "summerLevel": "2",
         "winterLevel": "2",
+        "gcr": "NO",
+        "ppr": "NO"
+	},
+    "ACE": {
+        "airportName": "Lanzarote Airport",
+        "country": "Spain",
+        "email": "ace.gtr@aena.es; aceops@azulhandling.com; r4occ@ryanair.com",
+        "contactNumber": "Not Available",
+        "summerLevel": "3",
+        "winterLevel": "3",
         "gcr": "NO",
         "ppr": "NO"
         
