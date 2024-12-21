@@ -69,10 +69,6 @@
     </style>
 </head>
 <body>
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
-
     <header>
         <h1>Airport Search</h1>
         <nav>
@@ -122,33 +118,20 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCJC-y9pgaUqlTjTt5L6UMF0EepHjQY8xw",
-            authDomain: "airport-search-eacb2.firebaseapp.com",
-            databaseURL: "https://airport-search-eacb2-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "airport-search-eacb2",
-            storageBucket: "airport-search-eacb2.appspot.com",
-            messagingSenderId: "497575046356",
-            appId: "1:497575046356:web:987be64b49174cf73bdf41",
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Global variable to store airport data
         let airportEmails = {};
 
-        // Load data from Firebase
+        // Load data from JSON file
         async function loadAirportData() {
             try {
-                const snapshot = await database.ref('airports').once('value');
-                airportEmails = snapshot.val() || {};
+                const response = await fetch('assets/emails.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load JSON data.');
+                }
+                airportEmails = await response.json();
                 console.log('Airport data loaded:', airportEmails);
             } catch (error) {
-                console.error('Error loading data from Firebase:', error);
-                alert('Failed to load data from Firebase.');
+                console.error('Error loading data from JSON file:', error);
+                alert('Failed to load airport data.');
             }
         }
 
@@ -199,16 +182,12 @@
                 ppr: document.getElementById('ppr').value,
             };
 
-            database.ref('airports/' + airportCode).set(airportData)
-                .then(() => {
-                    alert(`Airport ${airportCode} has been added/updated.`);
-                    loadAirportData(); // Refresh data
-                    hideAddForm(); // Hide the form
-                })
-                .catch(error => {
-                    console.error('Error adding/updating airport data:', error);
-                    alert('Error updating airport data. See console for details.');
-                });
+            // Update the local object
+            airportEmails[airportCode] = airportData;
+
+            console.log(`Airport ${airportCode} added/updated. Current data:`, airportEmails);
+            alert(`Airport ${airportCode} has been added/updated.`);
+            hideAddForm(); // Hide the form
         }
 
         // Load data on page load
