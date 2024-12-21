@@ -18,28 +18,29 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        .search-container {
-            max-width: 500px;
+        .container {
+            max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: left;
         }
-        .search-container h2 {
+        h2 {
             font-size: 24px;
             margin-bottom: 15px;
             color: #333;
         }
-        .search-container input {
+        input, select {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .search-container button {
+        button {
             padding: 10px 20px;
             font-size: 16px;
             color: white;
@@ -48,12 +49,11 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        .search-container button:hover {
+        button:hover {
             background-color: #0056b3;
         }
         .results {
             margin-top: 20px;
-            text-align: left;
             background: #fff;
             padding: 10px;
             border-radius: 8px;
@@ -62,20 +62,59 @@
         .results p {
             margin: 5px 0;
         }
+        .form-section {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Airport Search</h1>
-         <nav>
-        <a href="index.html" style="color: white; text-decoration: none;">Go Back to Main Page</a>
-    </nav>
+        <nav>
+            <a href="index.html" style="color: white; text-decoration: none;">Go Back to Main Page</a>
+        </nav>
     </header>
-    <div class="search-container">
+    <div class="container">
         <h2>Search for Airport</h2>
         <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
         <button onclick="searchAirport()">Search</button>
         <div id="results" class="results"></div>
+
+        <div class="form-section">
+            <h2>Manage Airport Contacts</h2>
+            <form id="airportForm">
+                <input type="text" id="airportName" placeholder="Airport Name">
+                <input type="text" id="country" placeholder="Country">
+                <input type="text" id="airportCodeInput" placeholder="Airport Code">
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="text" id="contactNumber" placeholder="Contact Number">
+                <select id="summerLevel">
+                    <option value="1">Summer Level 1</option>
+                    <option value="2">Summer Level 2</option>
+                    <option value="3">Summer Level 3</option>
+                </select>
+                <select id="winterLevel">
+                    <option value="1">Winter Level 1</option>
+                    <option value="2">Winter Level 2</option>
+                    <option value="3">Winter Level 3</option>
+                </select>
+                <select id="gcr">
+                    <option value="YES">GCR: YES</option>
+                    <option value="NO">GCR: NO</option>
+                </select>
+                <select id="ppr">
+                    <option value="YES">PPR: YES</option>
+                    <option value="NO">PPR: NO</option>
+                </select>
+                <button type="button" onclick="addOrUpdateAirport()">Add / Update Airport</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Remove Airport Contact</h2>
+            <input type="text" id="removeAirportCode" placeholder="Enter Airport Code to Remove">
+            <button onclick="removeAirport()">Remove Airport</button>
+        </div>
     </div>
     <script>
         let airportEmails = {};
@@ -97,9 +136,47 @@
             const resultsDiv = document.getElementById('results');
 
             if (airportCode in airportEmails) {
-                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${airportEmails[airportCode]}</p>`;
+                resultsDiv.innerHTML = `<p><strong>${airportCode}:</strong> ${JSON.stringify(airportEmails[airportCode], null, 2)}</p>`;
             } else {
                 resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
+            }
+        }
+
+        // Add or update airport information
+        function addOrUpdateAirport() {
+            const airportName = document.getElementById('airportName').value;
+            const country = document.getElementById('country').value;
+            const airportCode = document.getElementById('airportCodeInput').value.toUpperCase();
+            const email = document.getElementById('email').value;
+            const contactNumber = document.getElementById('contactNumber').value;
+            const summerLevel = document.getElementById('summerLevel').value;
+            const winterLevel = document.getElementById('winterLevel').value;
+            const gcr = document.getElementById('gcr').value;
+            const ppr = document.getElementById('ppr').value;
+
+            airportEmails[airportCode] = {
+                airportName,
+                country,
+                email,
+                contactNumber,
+                summerLevel,
+                winterLevel,
+                gcr,
+                ppr,
+            };
+
+            alert(`Airport ${airportCode} has been added/updated.`);
+        }
+
+        // Remove an airport by its code
+        function removeAirport() {
+            const airportCode = document.getElementById('removeAirportCode').value.toUpperCase();
+
+            if (airportCode in airportEmails) {
+                delete airportEmails[airportCode];
+                alert(`Airport ${airportCode} has been removed.`);
+            } else {
+                alert(`No airport found with code: ${airportCode}`);
             }
         }
 
@@ -108,3 +185,4 @@
     </script>
 </body>
 </html>
+
