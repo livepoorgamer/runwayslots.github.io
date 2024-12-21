@@ -137,9 +137,14 @@
         // Load data from Firebase
         let airportEmails = {};
         async function loadAirportData() {
-            const snapshot = await database.ref('airports').once('value');
-            airportEmails = snapshot.val() || {};
-            console.log('Airport data loaded:', airportEmails);
+            try {
+                const snapshot = await database.ref('airports').once('value');
+                airportEmails = snapshot.val() || {};
+                console.log('Airport data loaded:', airportEmails);
+            } catch (error) {
+                console.error('Error loading data from Firebase:', error);
+                alert('Failed to load data from Firebase.');
+            }
         }
 
         // Search for airport
@@ -170,8 +175,14 @@
             };
 
             database.ref('airports/' + airportCode).set(airportData)
-                .then(() => alert(`Airport ${airportCode} has been added/updated.`))
-                .catch(error => alert('Error updating airport data: ' + error));
+                .then(() => {
+                    alert(`Airport ${airportCode} has been added/updated.`);
+                    loadAirportData(); // Refresh local data
+                })
+                .catch(error => {
+                    console.error('Error updating airport data:', error);
+                    alert('Error updating airport data.');
+                });
         }
 
         // Remove airport
@@ -179,8 +190,14 @@
             const airportCode = document.getElementById('removeAirportCode').value.toUpperCase();
 
             database.ref('airports/' + airportCode).remove()
-                .then(() => alert(`Airport ${airportCode} has been removed.`))
-                .catch(error => alert('Error removing airport data: ' + error));
+                .then(() => {
+                    alert(`Airport ${airportCode} has been removed.`);
+                    loadAirportData(); // Refresh local data
+                })
+                .catch(error => {
+                    console.error('Error removing airport:', error);
+                    alert('Error removing airport.');
+                });
         }
 
         // Load data on page load
