@@ -32,13 +32,8 @@ function login() {
 
 // Show the appropriate form based on the action selected
 function createForm(action) {
-    if (action.toUpperCase() === "CHANGE SLOT") {
-        document.getElementById('changeSlotForm').style.display = 'block'; // Show Change Slot Form
-        document.getElementById('form-section').style.display = 'none'; // Hide default form
-    } else {
-        document.getElementById('changeSlotForm').style.display = 'none'; // Hide Change Slot Form
-        document.getElementById('form-section').style.display = 'block'; // Show default form
-    }
+    // Just show or hide the default form, no more "change slot form"
+    document.getElementById('form-section').style.display = 'block';
     document.getElementById('form-title').textContent = `${action} Form`; // Update the form title dynamically
     slotAction = action.toUpperCase(); // Set the slot action globally
 }
@@ -58,7 +53,7 @@ window.onscroll = function () {
     } else {
         backToTopButton.style.display = 'none';
     }
-}
+};
 
 // Validate seats input length
 function validateSeats(input) {
@@ -102,10 +97,11 @@ function showSCR() {
     const date = new Date(dateInput);
     const dayValue = getDayValue(date);
     const day = date.getDate().toString().padStart(2, '0');
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
     const month = monthNames[date.getMonth()];
     const formattedDate = `${day}${month}`;
 
+    // Decide if N (new) or D (delete/cancel) or C (change) — using your logic:
     let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "D" : slotAction === "NEW SLOT" ? "N" : "C";
 
     let scrMessage = `
@@ -133,57 +129,12 @@ SI ${slotAction} REQ ${airportCode}`;
     });
 }
 
-// Generate SCR message for Change Slot
-function showChangeSlotSCR() {
-    const slotType = document.getElementById('slotType').value;
-    const airportCode = document.getElementById('airportCode').value.toUpperCase();
-    const flightNumber = document.getElementById('flightNumber').value;
-    const dateInput = document.getElementById('date').value;
-    const numberOfSeats = document.getElementById('numberOfSeats').value.padStart(3, '0');
-    const aircraftType = document.getElementById('aircraftType').value.toUpperCase();
-    const time = document.getElementById('time').value.padStart(4, '0');
-    const newTime = document.getElementById('newTime').value.padStart(4, '0');
-    const destinationOrigin = document.getElementById('destinationOrigin').value.toUpperCase();
-    const serviceType = document.getElementById('serviceType').value;
-
-    if (!airportCode || !flightNumber || !dateInput || !numberOfSeats || !aircraftType || !time || !newTime || !destinationOrigin) {
-        alert("Please fill in all fields.");
-        return;
-    }
-
-    const date = new Date(dateInput);
-    const day = date.getDate().toString().padStart(2, '0');
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    const month = monthNames[date.getMonth()];
-    const formattedDate = `${day}${month}`;
-
-    let scrMessage = `
-SCR 
-W24 
-${formattedDate} 
-${airportCode} 
-`;
-
-    if (slotType === "ARRIVAL") {
-        scrMessage += `C ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType} 
-R ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${newTime}${destinationOrigin} ${serviceType} 
-SI SLOT CHG REQ ${airportCode}`;
-    } else if (slotType === "DEPARTURE") {
-        scrMessage += `C ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${destinationOrigin}${time} ${serviceType} 
-R ${flightNumber} ${formattedDate}${formattedDate} ${numberOfSeats}${aircraftType} ${destinationOrigin}${newTime} ${serviceType} 
-SI SLOT CHG REQ ${airportCode}`;
-    }
-
-    const scrMessageDiv = document.getElementById('scrMessage');
-    scrMessageDiv.textContent = scrMessage.trim();
-    scrMessageDiv.style.display = 'block';
-}
-
 // Show logs in table format
 function showLog() {
     const logContainer = document.getElementById('logContainer');
     const logTableBody = document.querySelector("#logTable tbody");
     logTableBody.innerHTML = ""; // Clear previous logs
+
     logData.forEach(log => {
         const row = logTableBody.insertRow();
         const cellAction = row.insertCell(0);
@@ -191,6 +142,7 @@ function showLog() {
         cellAction.textContent = log.slotAction;
         cellMessage.textContent = log.scrMessage;
     });
+
     logContainer.style.display = logData.length > 0 ? "block" : "none";
 
     if (logData.length > 0) {
@@ -221,7 +173,7 @@ function emailSCR() {
     const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
     const body = encodeURIComponent(scrMessage);
     const mailtoLink = `mailto:${emailList}?cc=${ccEmail}&subject=${subject}&body=${body}`;
-    
+
     window.location.href = mailtoLink;
 }
 
