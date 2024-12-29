@@ -1,129 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCR Management System</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCR Management System</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<!-- Login Section -->
 <div class="login-container">
-    <div class="video-background">
-        <video autoplay muted loop playsinline>
-            <source src="assets/videos/background.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-    <div class="overlay"></div>
-    <div class="login-box">
-        <h2>Login</h2>
-        <div class="error-message" id="errorMessage">Invalid username or password</div>
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter username">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter password">
-        <button onclick="login()">Login</button>
-    </div>
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="assets/videos/background.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <div class="overlay"></div>
+
+  <!-- Wrap login fields in a form (optional) -->
+  <form class="login-box" onsubmit="return false;">
+    <h2>Login</h2>
+    <!-- Hide this by default in CSS or via JavaScript if you only want it shown on error -->
+    <div class="error-message" id="errorMessage">Invalid username or password</div>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter username">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter password">
+
+    <!-- type="button" so it doesn't submit the form without JS -->
+    <button type="button" onclick="login()">Login</button>
+  </form>
 </div>
+
+<!-- Header and Nav -->
 <header>
-    <h1>SCR Management System</h1>
-    <!-- Navigation link to home page -->
-<nav style="margin-bottom: 20px;">
-  <a href="airport-search.html" style="
-     display: inline-block;
-     padding: 8px 12px;
-     background-color: #3498db;
-     color: #fff;
-     text-decoration: none;
-     border-radius: 4px;
-  ">
-    Advanced Airport Search
-  </a>
+  <h1>SCR Management System</h1>
+  <nav style="margin-bottom: 20px;">
+    <a href="airport-search.html" style="
+      display: inline-block;
+      padding: 8px 12px;
+      background-color: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    ">
+      Advanced Airport Search
+    </a>
     <a href="scrchangerequest.html" style="
-     display: inline-block;
-     padding: 8px 12px;
-     background-color: #3498db;
-     color: #fff;
-     text-decoration: none;
-     border-radius: 4px;
-  ">
-    SCR Change Request
-  </a>
-</nav>
+      display: inline-block;
+      padding: 8px 12px;
+      background-color: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    ">
+      SCR Change Request
+    </a>
+  </nav>
 </header>
+
+<!-- Main Container -->
 <div class="container">
-    <div class="btn-group">
-        <button onclick="createForm('New Slot')">New Slot</button>
-        <button onclick="createForm('Cancel Slot')">Cancel Slot</button>
-        <button onclick="showLog()">Log</button>
-        <button id="backToTop" style="display: none;" onclick="scrollToTop()">Back to Top</button>
+
+  <!-- Button Group -->
+  <div class="btn-group">
+    <button type="button" onclick="createForm('New Slot')">New Slot</button>
+    <button type="button" onclick="createForm('Cancel Slot')">Cancel Slot</button>
+    <button type="button" onclick="showLog()">Log</button>
+    <button id="backToTop" style="display: none;" type="button" onclick="scrollToTop()">Back to Top</button>
+  </div>
+
+  <!-- Form Section -->
+  <div id="form-section" class="form-section">
+    <h3 id="form-title"></h3>
+
+    <div class="form-group">
+      <label for="slotType">Slot Type:</label>
+      <select id="slotType">
+        <option value="ARRIVAL">ARRIVAL</option>
+        <option value="DEPARTURE">DEPARTURE</option>
+      </select>
     </div>
-    <div id="form-section" class="form-section">
-        <h3 id="form-title"></h3>
-        <div class="form-group">
-            <label for="slotType">Slot Type:</label>
-            <select id="slotType">
-                <option value="ARRIVAL">ARRIVAL</option>
-                <option value="DEPARTURE">DEPARTURE</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="airportCode">Airport (3 Letters):</label>
-            <input type="text" id="airportCode" maxlength="3" placeholder="e.g., VLC">
-        </div>
-        <div class="form-group">
-            <label for="flightNumber">Flight No.:</label>
-            <input type="text" id="flightNumber" placeholder="e.g., FR6060">
-        </div>
-        <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" id="date">
-        </div>
-        <div class="form-group">
-            <label for="numberOfSeats">Seats:</label>
-            <input type="number" id="numberOfSeats" placeholder="e.g., 189" maxlength="3" oninput="validateSeats(this)">
-        </div>
-        <div class="form-group">
-            <label for="aircraftType">Aircraft:</label>
-            <input type="text" id="aircraftType" placeholder="e.g., 73H">
-        </div>
-        <div class="form-group">
-            <label for="time">Time:</label>
-            <input type="text" id="time" maxlength="4" placeholder="e.g., 0725">
-        </div>
-        <div class="form-group">
-            <label for="destinationOrigin">Dest/Orig:</label>
-            <input type="text" id="destinationOrigin" placeholder="e.g., MAD">
-        </div>
-        <div class="form-group">
-            <label for="serviceType">Service:</label>
-            <select id="serviceType">
-                <option value="P">P</option>
-                <option value="J">J</option>
-                <option value="D">D</option>
-                <option value="K">K</option>
-                <option value="X">X</option>
-            </select>
-        </div>
-        <button onclick="showSCR()">SHOW SCR</button>
-        <button onclick="emailSCR()">EMAIL SCR</button>
-        <div id="scrMessage"></div>
+
+    <div class="form-group">
+      <label for="airportCode">Airport (3 Letters):</label>
+      <input type="text" id="airportCode" maxlength="3" placeholder="e.g., VLC">
     </div>
-   
-      <div id="logContainer" class="log-section">
-        <h3>Message Log</h3>
-        <table id="logTable">
-            <thead>
-                <tr>
-                    <th>Slot Type</th>
-                    <th>SCR Message</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <button onclick="downloadCSV()">Download CSV</button>
+
+    <div class="form-group">
+      <label for="flightNumber">Flight No.:</label>
+      <input type="text" id="flightNumber" placeholder="e.g., FR6060">
     </div>
+
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input type="date" id="date">
+    </div>
+
+    <div class="form-group">
+      <label for="numberOfSeats">Seats:</label>
+      <!-- Removed maxlength (not honored by type="number") -->
+      <!-- If limiting seats, consider max="999" or a custom pattern -->
+      <input
+        type="number"
+        id="numberOfSeats"
+        placeholder="e.g., 189"
+        oninput="validateSeats(this)"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="aircraftType">Aircraft:</label>
+      <input type="text" id="aircraftType" placeholder="e.g., 73H">
+    </div>
+
+    <div class="form-group">
+      <label for="time">Time:</label>
+      <input type="text" id="time" maxlength="4" placeholder="e.g., 0725">
+    </div>
+
+    <div class="form-group">
+      <label for="destinationOrigin">Dest/Orig:</label>
+      <input type="text" id="destinationOrigin" placeholder="e.g., MAD">
+    </div>
+
+    <div class="form-group">
+      <label for="serviceType">Service:</label>
+      <select id="serviceType">
+        <option value="P">P</option>
+        <option value="J">J</option>
+        <option value="D">D</option>
+        <option value="K">K</option>
+        <option value="X">X</option>
+      </select>
+    </div>
+
+    <button type="button" onclick="showSCR()">SHOW SCR</button>
+    <button type="button" onclick="emailSCR()">EMAIL SCR</button>
+
+    <div id="scrMessage"></div>
+  </div>
+
+  <!-- Log Section -->
+  <div id="logContainer" class="log-section">
+    <h3>Message Log</h3>
+    <table id="logTable">
+      <thead>
+        <tr>
+          <th>Slot Type</th>
+          <th>SCR Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Populated by scripts.js -->
+      </tbody>
+    </table>
+    <button type="button" onclick="downloadCSV()">Download CSV</button>
+  </div>
 </div>
+
+<!-- JavaScript -->
 <script src="scripts.js"></script>
 </body>
 </html>
