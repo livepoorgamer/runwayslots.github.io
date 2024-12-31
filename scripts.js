@@ -1,17 +1,40 @@
 // scripts.js
 
+// Ensure you've included Firebase SDK scripts in your HTML.
+// For Firebase v9 (Modular):
+// <script type="module" src="path/to/your/scripts.js"></script>
+// <script type="module">
+//   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+//   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+//   // Your code here
+// </script>
+
 // Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCIefgXMjzsXYbZ6yCVYBqxON84OH3BthI", // Replace with your actual API key
-    authDomain: "airportsearch-d151a.firebaseapp.com", // Replace with your actual Auth domain
-    projectId: "airportsearch-d151a", // Replace with your actual Project ID
-    // ... add other configuration parameters as needed
+    apiKey: "AIzaSyCIefgXMjzsXYbZ6yCVYBqxON84OH3BthI",
+    authDomain: "airportsearch-d151a.firebaseapp.com",
+    projectId: "airportsearch-d151a",
+    storageBucket: "airportsearch-d151a.appspot.com",
+    messagingSenderId: "686237913756", // Replace with your actual Messaging Sender ID
+    appId: "1:686237913756:web:adb3b64de1dbc0fef39359", // Replace with your actual App ID
+    // measurementId: "YOUR_MEASUREMENT_ID" // Optional
 };
 
 // Initialize Firebase
+// For Firebase v8 and below (Namespaced):
+// Make sure to include Firebase scripts in your HTML, e.g.,
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
+// Alternatively, for Firebase v9 (Modular):
+// import { initializeApp } from "firebase/app";
+// import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+
+// Variables
 let slotAction = '';
 let airportEmails = {}; // Store emails loaded from JSON
 const logData = [];
@@ -20,6 +43,9 @@ const logData = [];
 async function loadEmailData() {
     try {
         const response = await fetch('assets/emails.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         airportEmails = await response.json();
         console.log('Email data loaded:', airportEmails); // Debug loaded data
     } catch (error) {
@@ -33,23 +59,26 @@ function login() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
+    if (!email || !password) {
+        displayError('Please enter both email and password.');
+        return;
+    }
+
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
             console.log('User signed in:', user.email);
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('mainHeader').style.display = 'block';
-            document.getElementById('mainContainer').style.display = 'block';
+            hideElement('errorMessage');
+            hideElement('loginContainer');
+            showElement('mainHeader');
+            showElement('mainContainer');
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.error('Error signing in:', errorCode, errorMessage);
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = errorMessage;
-            errorDiv.style.display = 'block';
+            displayError(errorMessage);
         });
 }
 
@@ -57,12 +86,32 @@ function login() {
 function logout() {
     auth.signOut().then(() => {
         console.log('User signed out');
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('mainHeader').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'none';
+        showElement('loginContainer');
+        hideElement('mainHeader');
+        hideElement('mainContainer');
     }).catch((error) => {
         console.error('Error signing out:', error);
+        alert('Error signing out. Please try again.');
     });
+}
+
+// Helper Functions to Show/Hide Elements
+function showElement(id) {
+    const elem = document.getElementById(id);
+    if (elem) elem.style.display = 'block';
+}
+
+function hideElement(id) {
+    const elem = document.getElementById(id);
+    if (elem) elem.style.display = 'none';
+}
+
+function displayError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
 }
 
 // Listen for Authentication State Changes
@@ -70,44 +119,26 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         // User is signed in
         console.log('User is signed in:', user.email);
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('mainHeader').style.display = 'block';
-        document.getElementById('mainContainer').style.display = 'block';
+        hideElement('loginContainer');
+        showElement('mainHeader');
+        showElement('mainContainer');
     } else {
         // No user is signed in
         console.log('No user is signed in');
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('mainHeader').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'none';
+        showElement('loginContainer');
+        hideElement('mainHeader');
+        hideElement('mainContainer');
     }
 });
 
-// Remove or comment out the old custom login function
-/*
-function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const errorMessage = document.getElementById('errorMessage');
-
-    if (username === "root" && password === "root") {
-        document.querySelector('.login-container').style.display = 'none'; // Hide login
-        document.querySelector('.container').style.display = 'block'; // Show main container
-        document.getElementById('form-section').style.display = 'none'; // Ensure form is hidden after login
-        document.body.style.backgroundColor = '#f4f4f9';
-    } else {
-        errorMessage.style.display = 'block';
-    }
-}
-*/
-
 // Show the appropriate form based on the action selected
 function createForm(action) {
-    // Just show or hide the default form, no more "change slot form"
     document.getElementById('form-section').style.display = 'block';
-    document.getElementById('form-title').textContent = `${action} Form`; // Update the form title dynamically
-    slotAction = action.toUpperCase(); // Set the slot action globally
+    document.getElementById('form-title').textContent = `${action} Form`;
+    slotAction = action.toUpperCase();
 }
 
+// Scroll to Top Function
 function scrollToTop() {
     window.scrollTo({
         top: 0,
@@ -144,14 +175,14 @@ function getDayValue(date) {
         'Saturday': '0000060'
     };
     const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date);
-    return dayValues[dayName];
+    return dayValues[dayName] || '0000000'; // Default value if day not found
 }
 
 // Generate SCR message
 function showSCR() {
     const slotType = document.getElementById('slotType').value;
     const airportCode = document.getElementById('airportCode').value.toUpperCase();
-    const flightNumber = document.getElementById('flightNumber').value;
+    const flightNumber = document.getElementById('flightNumber').value.trim();
     const dateInput = document.getElementById('date').value;
     const numberOfSeats = document.getElementById('numberOfSeats').value.padStart(3, '0');
     const aircraftType = document.getElementById('aircraftType').value.toUpperCase();
@@ -159,23 +190,33 @@ function showSCR() {
     const destinationOrigin = document.getElementById('destinationOrigin').value.toUpperCase();
     const serviceType = document.getElementById('serviceType').value;
 
+    // Validation
     if (!airportCode || !flightNumber || !dateInput || !numberOfSeats || !aircraftType || !time || !destinationOrigin) {
         alert("Please fill in all fields.");
         return;
     }
 
     const date = new Date(dateInput);
+    if (isNaN(date)) {
+        alert("Invalid date format.");
+        return;
+    }
+
     const dayValue = getDayValue(date);
     const day = date.getDate().toString().padStart(2, '0');
     const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
     const month = monthNames[date.getMonth()];
     const formattedDate = `${day}${month}`;
 
-    // Decide if N (new) or D (delete/cancel) or C (change) — using your logic:
-    let scrTypeIndicator = slotAction === "CANCEL SLOT" ? "D" : slotAction === "NEW SLOT" ? "N" : "C";
+    // Decide if N (new) or D (delete/cancel) or C (change)
+    let scrTypeIndicator = 'C'; // Default to Change
+    if (slotAction === "CANCEL SLOT") {
+        scrTypeIndicator = "D";
+    } else if (slotAction === "NEW SLOT") {
+        scrTypeIndicator = "N";
+    }
 
-    let scrMessage = `
-SCR  
+    let scrMessage = `SCR  
 W24  
 ${formattedDate}  
 ${airportCode}  
@@ -187,6 +228,9 @@ SI ${slotAction} REQ ${airportCode}`;
     } else if (slotType === "DEPARTURE") {
         scrMessage += `${scrTypeIndicator} ${flightNumber} ${formattedDate}${formattedDate} ${dayValue} ${numberOfSeats}${aircraftType} ${time}${destinationOrigin} ${serviceType}  
 SI ${slotAction} REQ ${airportCode}`;
+    } else {
+        alert("Invalid slot type selected.");
+        return;
     }
 
     const scrMessageDiv = document.getElementById('scrMessage');
@@ -197,6 +241,8 @@ SI ${slotAction} REQ ${airportCode}`;
         slotAction,
         scrMessage: scrMessage.trim()
     });
+
+    console.log('SCR Message Generated:', scrMessage.trim());
 }
 
 // Show logs in table format
@@ -204,6 +250,12 @@ function showLog() {
     const logContainer = document.getElementById('logContainer');
     const logTableBody = document.querySelector("#logTable tbody");
     logTableBody.innerHTML = ""; // Clear previous logs
+
+    if (logData.length === 0) {
+        logContainer.style.display = 'none';
+        alert("No log data available.");
+        return;
+    }
 
     logData.forEach(log => {
         const row = logTableBody.insertRow();
@@ -213,14 +265,12 @@ function showLog() {
         cellMessage.textContent = log.scrMessage;
     });
 
-    logContainer.style.display = logData.length > 0 ? "block" : "none";
+    logContainer.style.display = "block";
 
-    if (logData.length > 0) {
-        logContainer.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
+    logContainer.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }
 
 // Email SCR message
@@ -242,8 +292,9 @@ function emailSCR() {
 
     const subject = encodeURIComponent(`${slotAction} REQ ${airportCode}`);
     const body = encodeURIComponent(scrMessage);
-    const mailtoLink = `mailto:${emailList}?cc=${ccEmail}&subject=${subject}&body=${body}`;
+    const mailtoLink = `mailto:${emailList}?cc=${encodeURIComponent(ccEmail)}&subject=${subject}&body=${body}`;
 
+    // Open mail client
     window.location.href = mailtoLink;
 }
 
@@ -254,16 +305,16 @@ function downloadCSV() {
         return;
     }
 
-    const csvContent = [
+    const csvRows = [
         ["Slot Action", "SCR Message"], // Headers
         ...logData.map(log => [log.slotAction, log.scrMessage.replace(/\n/g, " ")]) // Escape newlines
-    ]
-        .map(row => row.map(field => `"${field}"`).join(",")) // Quote fields
-        .join("\n"); // Join rows
+    ];
+
+    const csvContent = csvRows.map(row => row.map(field => `"${field.replace(/"/g, '""')}"`).join(",")).join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
     link.setAttribute("href", url);
     link.setAttribute("download", "scr_log.csv");
     link.style.display = "none";
@@ -274,4 +325,4 @@ function downloadCSV() {
 }
 
 // Load email data when the page loads
-window.onload = loadEmailData;
+window.addEventListener('DOMContentLoaded', loadEmailData);
