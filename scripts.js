@@ -1,38 +1,19 @@
 // scripts.js
 
-// Ensure you've included Firebase SDK scripts in your HTML.
-// For Firebase v9 (Modular):
-// <script type="module" src="path/to/your/scripts.js"></script>
-// <script type="module">
-//   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-//   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-//   // Your code here
-// </script>
-
 // Your Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCIefgXMjzsXYbZ6yCVYBqxON84OH3BthI",
     authDomain: "airportsearch-d151a.firebaseapp.com",
     projectId: "airportsearch-d151a",
     storageBucket: "airportsearch-d151a.appspot.com",
-    messagingSenderId: "686237913756", // Replace with your actual Messaging Sender ID
-    appId: "1:686237913756:web:adb3b64de1dbc0fef39359", // Replace with your actual App ID
+    messagingSenderId: "686237913756",
+    appId: "1:686237913756:web:adb3b64de1dbc0fef39359"
     // measurementId: "YOUR_MEASUREMENT_ID" // Optional
 };
 
 // Initialize Firebase
-// For Firebase v8 and below (Namespaced):
-// Make sure to include Firebase scripts in your HTML, e.g.,
-// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
-// Alternatively, for Firebase v9 (Modular):
-// import { initializeApp } from "firebase/app";
-// import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-// const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app);
 
 // Variables
 let slotAction = '';
@@ -55,7 +36,9 @@ async function loadEmailData() {
 }
 
 // Login Function using Firebase Auth
-function login() {
+function login(event) {
+    event.preventDefault(); // Prevent form submission
+
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
@@ -133,7 +116,7 @@ auth.onAuthStateChanged((user) => {
 
 // Show the appropriate form based on the action selected
 function createForm(action) {
-    document.getElementById('form-section').style.display = 'block';
+    showElement('form-section');
     document.getElementById('form-title').textContent = `${action} Form`;
     slotAction = action.toUpperCase();
 }
@@ -325,4 +308,12 @@ function downloadCSV() {
 }
 
 // Load email data when the page loads
-window.addEventListener('DOMContentLoaded', loadEmailData);
+window.addEventListener('DOMContentLoaded', () => {
+    loadEmailData();
+
+    // Attach submit event listener to the login form
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
+    }
+});
