@@ -1,266 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Airport Search</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        header {
-            background: linear-gradient(135deg, #007BFF, #0056b3);
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        header nav a {
-            color: #FFD700;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            color: #007BFF;
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: calc(100% - 20px);
-            padding: 15px;
-            font-size: 1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
-            border-color: #007BFF;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-        }
-
-        button {
-            padding: 12px 20px;
-            font-size: 1rem;
-            color: white;
-            background: linear-gradient(135deg, #007BFF, #0056b3);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.2s ease;
-            margin: 5px;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #0056b3, #003f7f);
-            transform: translateY(-2px);
-        }
-
-        .results, .recent-searches {
-            margin-top: 20px;
-            text-align: left;
-            background: #f9f9ff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .results p, .recent-searches p {
-            margin: 10px 0;
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        .results p strong, .recent-searches h3 {
-            color: #007BFF;
-        }
-
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        ul li {
-            padding: 5px;
-            cursor: pointer;
-            background: #f4f4f9;
-            border-bottom: 1px solid #ddd;
-        }
-
-        ul li:hover {
-            background: #ddd;
-        }
-
-        .dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-
-        .dark-mode .container {
-            background: #1f1f1f;
-        }
-
-        .dark-mode button {
-            background: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Airport Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input, button, textarea {
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    textarea {
+      height: 100px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Enhanced Airport Search</h1>
-        <!-- Navigation link to home page -->
-<nav style="margin-bottom: 20px;">
-  <a href="index.html" style="
-     display: inline-block;
-     padding: 8px 12px;
-     background-color: #3498db;
-     color: #fff;
-     text-decoration: none;
-     border-radius: 4px;
-  ">
-    Back to Home
-  </a>
-</nav>
-    </header>
+  <h1>Firebase Realtime Database: Airport Search</h1>
 
-    <div class="container">
-        <button id="themeToggle">Toggle Dark Mode</button>
-        <h2>Search for an Airport</h2>
-        <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., VLC)">
-        <ul id="autocompleteList" style="display: none;"></ul>
-        <button onclick="searchAirport()">Search</button>
-        <div id="results" class="results"></div>
-    </div>
+  <!-- Search Section -->
+  <label for="airportCode">Enter Airport Code:</label><br>
+  <input type="text" id="airportCode" placeholder="e.g., ABZ, ACE"><br>
+  <button id="fetchAirportBtn">Fetch Airport Data</button>
 
-    <div id="recentSearches" class="recent-searches container"></div>
+  <h2>Result:</h2>
+  <pre id="responseOutput">No data yet...</pre>
 
-    <script>
-        let airportEmails = {};
-        let recentSearches = [];
+  <!-- Edit/Add Section -->
+  <h2>Edit or Add New Airport</h2>
+  <label for="airportName">Airport Code:</label><br>
+  <input type="text" id="editAirportCode" placeholder="e.g., ABZ"><br>
 
-        async function loadAirportData() {
-            try {
-                const response = await fetch('assets/emails.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load JSON data.');
-                }
-                airportEmails = await response.json();
-                console.log('Airport data loaded:', airportEmails);
-                autocompleteAirportCodes();
-            } catch (error) {
-                console.error('Error loading data from JSON file:', error);
-                alert('Failed to load airport data.');
-            }
+  <label for="country">Country:</label><br>
+  <input type="text" id="country" placeholder="e.g., United Kingdom"><br>
+
+  <label for="email">Email:</label><br>
+  <input type="email" id="email" placeholder="e.g., info@airport.com"><br>
+
+  <label for="contactNumber">Contact Number:</label><br>
+  <input type="text" id="contactNumber" placeholder="e.g., +44 123 456 789"><br>
+
+  <label for="gcr">GCR:</label><br>
+  <input type="text" id="gcr" placeholder="e.g., YES or NO"><br>
+
+  <label for="ppr">PPR:</label><br>
+  <input type="text" id="ppr" placeholder="e.g., YES or NO"><br>
+
+  <label for="summerLevel">Summer Level:</label><br>
+  <input type="text" id="summerLevel" placeholder="e.g., 2"><br>
+
+  <label for="winterLevel">Winter Level:</label><br>
+  <input type="text" id="winterLevel" placeholder="e.g., 2"><br>
+
+  <label for="additionalInformation">Additional Information:</label><br>
+  <textarea id="additionalInformation" placeholder="Enter any additional information"></textarea><br>
+
+  <button id="saveAirportBtn">Save Airport Data</button>
+
+  <!-- Firebase Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, get, set, child, update } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIefgXMjzsXYbZ6yCVYBqxON84OH3BthI",
+      authDomain: "airportsearch-d151a.firebaseapp.com",
+      databaseURL: "https://airportsearch-d151a-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "airportsearch-d151a",
+      storageBucket: "airportsearch-d151a.firebasestorage.app",
+      messagingSenderId: "686237913756",
+      appId: "1:686237913756:web:adb3b64de1dbc0fef39359"
+    };
+
+    // Initialize Firebase and Realtime Database
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // DOM Elements
+    const airportCodeInput = document.getElementById('airportCode');
+    const fetchAirportBtn = document.getElementById('fetchAirportBtn');
+    const responseOutput = document.getElementById('responseOutput');
+    const saveAirportBtn = document.getElementById('saveAirportBtn');
+
+    // Edit/Add Form Elements
+    const editAirportCode = document.getElementById('editAirportCode');
+    const country = document.getElementById('country');
+    const email = document.getElementById('email');
+    const contactNumber = document.getElementById('contactNumber');
+    const gcr = document.getElementById('gcr');
+    const ppr = document.getElementById('ppr');
+    const summerLevel = document.getElementById('summerLevel');
+    const winterLevel = document.getElementById('winterLevel');
+    const additionalInformation = document.getElementById('additionalInformation');
+
+    // Fetch airport data based on the airportCode key
+    async function fetchAirportData() {
+      const code = airportCodeInput.value.trim().toUpperCase();
+      if (!code) {
+        responseOutput.textContent = "Please enter a valid airport code.";
+        return;
+      }
+
+      try {
+        const dbRef = ref(db);
+        const snapshot = await get(child(dbRef, code));
+
+        if (!snapshot.exists()) {
+          responseOutput.textContent = `No matching airport found for code: ${code}`;
+          return;
         }
 
-        function autocompleteAirportCodes() {
-            const input = document.getElementById('airportCode');
-            const autocompleteList = document.getElementById('autocompleteList');
-            input.addEventListener('input', () => {
-                const query = input.value.toUpperCase();
-                autocompleteList.innerHTML = '';
-                autocompleteList.style.display = query ? 'block' : 'none';
-                if (query) {
-                    const matches = Object.keys(airportEmails).filter(code =>
-                        code.startsWith(query)
-                    );
-                    matches.forEach(code => {
-                        const item = document.createElement('li');
-                        item.textContent = code;
-                        item.addEventListener('click', () => {
-                            input.value = code;
-                            autocompleteList.innerHTML = '';
-                            autocompleteList.style.display = 'none';
-                        });
-                        autocompleteList.appendChild(item);
-                    });
-                }
-            });
-            document.addEventListener('click', () => {
-                autocompleteList.innerHTML = '';
-                autocompleteList.style.display = 'none';
-            });
-        }
+        // Display data
+        const airport = snapshot.val();
+        responseOutput.textContent = `
+Airport Code: ${airport.airportName}
+Country: ${airport.country}
+Email: ${airport.email}
+Contact Number: ${airport.contactNumber}
+GCR: ${airport.gcr}
+PPR: ${airport.ppr}
+Summer Level: ${airport.summerLevel}
+Winter Level: ${airport.winterLevel}
+Additional Information: ${airport.additionalInformation}
+        `.trim();
 
-        function updateRecentSearches(airportCode) {
-            if (!recentSearches.includes(airportCode)) {
-                if (recentSearches.length === 5) recentSearches.shift();
-                recentSearches.push(airportCode);
-            }
-            renderRecentSearches();
-        }
+        // Pre-fill form for editing
+        editAirportCode.value = airport.airportName;
+        country.value = airport.country;
+        email.value = airport.email;
+        contactNumber.value = airport.contactNumber;
+        gcr.value = airport.gcr;
+        ppr.value = airport.ppr;
+        summerLevel.value = airport.summerLevel;
+        winterLevel.value = airport.winterLevel;
+        additionalInformation.value = airport.additionalInformation;
 
-        function renderRecentSearches() {
-            const recentDiv = document.getElementById('recentSearches');
-            recentDiv.innerHTML = `<h3>Recently Searched Airports</h3>`;
-            recentSearches.forEach(code => {
-                recentDiv.innerHTML += `<p>${code}</p>`;
-            });
-        }
+      } catch (error) {
+        responseOutput.textContent = "Error: " + error.message;
+      }
+    }
 
-        function searchAirport() {
-            const airportCode = document.getElementById('airportCode').value.toUpperCase();
-            const resultsDiv = document.getElementById('results');
-            const airport = airportEmails[airportCode];
+    // Save (add new or update existing) airport data
+    async function saveAirportData() {
+      const code = editAirportCode.value.trim().toUpperCase();
+      if (!code) {
+        alert("Please enter an airport code.");
+        return;
+      }
 
-            if (airport) {
-                updateRecentSearches(airportCode);
-                resultsDiv.innerHTML = `
-                    <p><strong>Code:</strong> ${airportCode}</p>
-                    <p><strong>Name:</strong> ${airport.airportName}</p>
-                    <p><strong>Country:</strong> ${airport.country}</p>
-                    <p><strong>Email:</strong> ${airport.email}</p>
-                    <p><strong>Contact:</strong> ${airport.contactNumber}</p>
-                    <p><strong>Summer Level:</strong> ${airport.summerLevel}</p>
-                    <p><strong>Winter Level:</strong> ${airport.winterLevel}</p>
-                    <p><strong>GCR:</strong> ${airport.gcr}</p>
-                    <p><strong>PPR:</strong> ${airport.ppr}</p>
-                    <P><strong>Additional Information:</strong> ${airport.additionalInformation}</p>
-                    
-                    
-                `;
-            } else {
-                resultsDiv.innerHTML = `<p style="color:red;">No data found for airport code: ${airportCode}</p>`;
-            }
-        }
+      const airportData = {
+        airportName: code,
+        country: country.value.trim(),
+        email: email.value.trim(),
+        contactNumber: contactNumber.value.trim(),
+        gcr: gcr.value.trim(),
+        ppr: ppr.value.trim(),
+        summerLevel: summerLevel.value.trim(),
+        winterLevel: winterLevel.value.trim(),
+        additionalInformation: additionalInformation.value.trim()
+      };
 
-        const toggleButton = document.getElementById('themeToggle');
-        toggleButton.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-        });
+      try {
+        const dbRef = ref(db, code);
+        await set(dbRef, airportData);
+        alert(`Airport data for ${code} has been saved successfully.`);
+      } catch (error) {
+        alert("Error saving data: " + error.message);
+      }
+    }
 
-        window.onload = loadAirportData;
-    </script>
+    // Event Listeners
+    fetchAirportBtn.addEventListener('click', fetchAirportData);
+    saveAirportBtn.addEventListener('click', saveAirportData);
+  </script>
 </body>
 </html>
