@@ -1,3 +1,17 @@
+// scripts.js
+
+// Your Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCIefgXMjzsXYbZ6yCVYBqxON84OH3BthI", // Replace with your actual API key
+    authDomain: "airportsearch-d151a.firebaseapp.com", // Replace with your actual Auth domain
+    projectId: "airportsearch-d151a", // Replace with your actual Project ID
+    // ... add other configuration parameters as needed
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
 let slotAction = '';
 let airportEmails = {}; // Store emails loaded from JSON
 const logData = [];
@@ -14,7 +28,62 @@ async function loadEmailData() {
     }
 }
 
-// Handle login functionality
+// Login Function using Firebase Auth
+function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log('User signed in:', user.email);
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'block';
+            document.getElementById('mainContainer').style.display = 'block';
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error('Error signing in:', errorCode, errorMessage);
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = errorMessage;
+            errorDiv.style.display = 'block';
+        });
+}
+
+// Logout Function
+function logout() {
+    auth.signOut().then(() => {
+        console.log('User signed out');
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('mainHeader').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'none';
+    }).catch((error) => {
+        console.error('Error signing out:', error);
+    });
+}
+
+// Listen for Authentication State Changes
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        // User is signed in
+        console.log('User is signed in:', user.email);
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('mainHeader').style.display = 'block';
+        document.getElementById('mainContainer').style.display = 'block';
+    } else {
+        // No user is signed in
+        console.log('No user is signed in');
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('mainHeader').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'none';
+    }
+});
+
+// Remove or comment out the old custom login function
+/*
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -29,6 +98,7 @@ function login() {
         errorMessage.style.display = 'block';
     }
 }
+*/
 
 // Show the appropriate form based on the action selected
 function createForm(action) {
