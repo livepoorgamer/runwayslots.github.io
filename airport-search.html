@@ -3,76 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Airport Search</title>
+  <title>Futuristic Airport Database</title>
   <style>
+    /* General Styles */
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #eaeaea;
+      text-align: center;
     }
-    input, button, textarea {
-      margin: 5px 0;
-      padding: 8px;
-      font-size: 14px;
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 20px 0;
+      color: #00d4ff;
+      text-shadow: 0 0 15px #00d4ff, 0 0 30px #0077ff;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin: 20px 0 10px;
+    }
+
+    input, textarea, button {
+      margin: 10px 0;
+      padding: 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
       width: 100%;
+      max-width: 500px;
       box-sizing: border-box;
     }
-    textarea {
-      height: 100px;
+
+    input, textarea {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
     }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #00d4ff;
+      box-shadow: 0 0 8px #00d4ff;
+    }
+
+    button {
+      background: linear-gradient(135deg, #00d4ff, #0077ff);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0, 123, 255, 0.3);
+    }
+
     pre {
-      background-color: #f4f4f4;
-      padding: 10px;
-      border-radius: 4px;
-      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      color: #00d4ff;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 10px;
+      text-align: left;
+      max-width: 500px;
+      margin: 20px auto;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 1rem;
+      text-align: left;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
     }
   </style>
 </head>
 <body>
-  <h1>Firebase Realtime Database: Airport Search</h1>
+  <h1>Futuristic Airport Database</h1>
 
-  <!-- Search Section -->
-  <label for="airportCode">Enter Airport Code:</label><br>
-  <input type="text" id="airportCode" placeholder="e.g., ABZ, ACE"><br>
-  <button id="fetchAirportBtn">Fetch Airport Data</button>
+  <div class="container">
+    <!-- Search Section -->
+    <h2>Search for an Airport</h2>
+    <input type="text" id="airportCode" placeholder="Enter Airport Code (e.g., ABZ, ACE)">
+    <button id="fetchAirportBtn">Fetch Airport Data</button>
 
-  <h2>Result:</h2>
-  <pre id="responseOutput">No data yet...</pre>
+    <h2>Result:</h2>
+    <pre id="responseOutput">No data yet...</pre>
 
-  <!-- Edit/Add Section -->
-  <h2>Edit or Add New Airport</h2>
-  <label for="airportName">Airport Code:</label><br>
-  <input type="text" id="editAirportCode" placeholder="e.g., ABZ"><br>
+    <!-- Edit/Add Section -->
+    <h2>Edit or Add New Airport</h2>
+    <label for="editAirportCode">Airport Code:</label>
+    <input type="text" id="editAirportCode" placeholder="e.g., ABZ">
 
-  <label for="country">Country:</label><br>
-  <input type="text" id="country" placeholder="e.g., United Kingdom"><br>
+    <label for="country">Country:</label>
+    <input type="text" id="country" placeholder="e.g., United Kingdom">
 
-  <label for="email">Email:</label><br>
-  <input type="email" id="email" placeholder="e.g., info@airport.com"><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" placeholder="e.g., info@airport.com">
 
-  <label for="contactNumber">Contact Number:</label><br>
-  <input type="text" id="contactNumber" placeholder="e.g., +44 123 456 789"><br>
+    <label for="contactNumber">Contact Number:</label>
+    <input type="text" id="contactNumber" placeholder="e.g., +44 123 456 789">
 
-  <label for="gcr">GCR:</label><br>
-  <input type="text" id="gcr" placeholder="e.g., YES or NO"><br>
+    <label for="gcr">GCR:</label>
+    <input type="text" id="gcr" placeholder="e.g., YES or NO">
 
-  <label for="ppr">PPR:</label><br>
-  <input type="text" id="ppr" placeholder="e.g., YES or NO"><br>
+    <label for="ppr">PPR:</label>
+    <input type="text" id="ppr" placeholder="e.g., YES or NO">
 
-  <label for="summerLevel">Summer Level:</label><br>
-  <input type="text" id="summerLevel" placeholder="e.g., 2"><br>
+    <label for="summerLevel">Summer Level:</label>
+    <input type="text" id="summerLevel" placeholder="e.g., 2">
 
-  <label for="winterLevel">Winter Level:</label><br>
-  <input type="text" id="winterLevel" placeholder="e.g., 2"><br>
+    <label for="winterLevel">Winter Level:</label>
+    <input type="text" id="winterLevel" placeholder="e.g., 2">
 
-  <label for="additionalInformation">Additional Information:</label><br>
-  <textarea id="additionalInformation" placeholder="Enter any additional information"></textarea><br>
+    <label for="additionalInformation">Additional Information:</label>
+    <textarea id="additionalInformation" placeholder="Enter any additional information"></textarea>
 
-  <button id="saveAirportBtn">Save Airport Data</button>
+    <button id="saveAirportBtn">Save Airport Data</button>
+  </div>
 
-  <!-- Firebase Integration -->
+  <footer>
+    © 2024 Realtime Airport Database -K.B
+  </footer>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getDatabase, ref, get, set, child, update } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+    import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -95,7 +169,6 @@
     const responseOutput = document.getElementById('responseOutput');
     const saveAirportBtn = document.getElementById('saveAirportBtn');
 
-    // Edit/Add Form Elements
     const editAirportCode = document.getElementById('editAirportCode');
     const country = document.getElementById('country');
     const email = document.getElementById('email');
@@ -106,7 +179,6 @@
     const winterLevel = document.getElementById('winterLevel');
     const additionalInformation = document.getElementById('additionalInformation');
 
-    // Fetch airport data based on the airportCode key
     async function fetchAirportData() {
       const code = airportCodeInput.value.trim().toUpperCase();
       if (!code) {
@@ -123,7 +195,6 @@
           return;
         }
 
-        // Display data
         const airport = snapshot.val();
         responseOutput.textContent = `
 Airport Code: ${airport.airportName}
@@ -137,7 +208,6 @@ Winter Level: ${airport.winterLevel}
 Additional Information: ${airport.additionalInformation}
         `.trim();
 
-        // Pre-fill form for editing
         editAirportCode.value = airport.airportName;
         country.value = airport.country;
         email.value = airport.email;
@@ -147,13 +217,11 @@ Additional Information: ${airport.additionalInformation}
         summerLevel.value = airport.summerLevel;
         winterLevel.value = airport.winterLevel;
         additionalInformation.value = airport.additionalInformation;
-
       } catch (error) {
         responseOutput.textContent = "Error: " + error.message;
       }
     }
 
-    // Save (add new or update existing) airport data
     async function saveAirportData() {
       const code = editAirportCode.value.trim().toUpperCase();
       if (!code) {
@@ -182,7 +250,6 @@ Additional Information: ${airport.additionalInformation}
       }
     }
 
-    // Event Listeners
     fetchAirportBtn.addEventListener('click', fetchAirportData);
     saveAirportBtn.addEventListener('click', saveAirportData);
   </script>
