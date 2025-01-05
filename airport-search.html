@@ -82,7 +82,7 @@
     }
     .airport-info {
       margin: 10px auto;
-      text-align: left;
+      text-align: centre;
       max-width: 500px;
       line-height: 1.4em;
       white-space: pre-wrap; /* preserve line breaks */
@@ -171,12 +171,12 @@
     <button id="fetchAirportBtn">Fetch Airport Data</button>
     
     <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="airport-search.html">Airport Search</a></li>
-      <!-- Add more navigation links here if needed -->
-    </ul>
-  </nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="airport-search.html">Airport Search</a></li>
+        <!-- Add more navigation links here if needed -->
+      </ul>
+    </nav>
 
     <h2>Result:</h2>
     <!-- Styled result display -->
@@ -192,14 +192,19 @@
     <!-- Add/Edit Form -->
     <div id="airportForm">
       <h2 id="formTitle">Add/Edit Airport</h2>
+      
       <label for="editAirportCode">Airport Code:</label>
       <input type="text" id="editAirportCode" placeholder="e.g., ABZ">
+      
+      <!-- Added Airport Name Field -->
+      <label for="airportName">Airport Name:</label>
+      <input type="text" id="airportName" placeholder="e.g., London Heathrow">
 
       <label for="country">Country:</label>
       <input type="text" id="country" placeholder="e.g., United Kingdom">
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" placeholder="e.g., info@airport.com">
+      <label for="airportEmails">Email:</label>
+      <input type="email" id="airportEmails" placeholder="e.g., info@airport.com">
 
       <label for="contactNumber">Contact Number:</label>
       <input type="text" id="contactNumber" placeholder="e.g., +44 123 456 789">
@@ -258,8 +263,9 @@
     const formTitle = document.getElementById('formTitle');
 
     const editAirportCode = document.getElementById('editAirportCode');
+    const airportName = document.getElementById('airportName'); // New Element
     const country = document.getElementById('country');
-    const email = document.getElementById('email');
+    const airportEmails = document.getElementById('airportEmails'); // Updated Element
     const contactNumber = document.getElementById('contactNumber');
     const gcr = document.getElementById('gcr');
     const ppr = document.getElementById('ppr');
@@ -295,8 +301,9 @@
     // Function to clear the form fields
     function clearForm() {
       editAirportCode.value = '';
+      airportName.value = '';
       country.value = '';
-      email.value = '';
+      airportEmails.value = '';
       contactNumber.value = '';
       gcr.value = '';
       ppr.value = '';
@@ -307,9 +314,10 @@
 
     // Function to populate the form with existing data
     function populateForm(airport) {
-      editAirportCode.value = airport.airportName || '';
+      editAirportCode.value = airport.code || '';
+      airportName.value = airport.airportName || '';
       country.value = airport.country || '';
-      email.value = airport.email || '';
+      airportEmails.value = airport.airportEmails || '';
       contactNumber.value = airport.contactNumber || '';
       gcr.value = airport.gcr || '';
       ppr.value = airport.ppr || '';
@@ -339,7 +347,7 @@
         const airport = snapshot.val();
         currentAirportData = { ...airport, code: code }; // Store the code as well
 
-        // Display in a styled format
+        // Display in a styled format with proper formatting
         responseOutput.innerHTML = `
           <div class="result-header">
             <strong>${airport.airportName}</strong> – ${airport.country}
@@ -352,7 +360,9 @@
           </div>
           <div class="airport-info-title">Airport Info</div>
           <div class="airport-info">
-            ${airport.additionalInformation || 'No additional information available.'}
+            <strong>Additional Information:</strong> ${airport.additionalInformation || 'N/A'}<br>
+            <strong>Contact Number:</strong> ${airport.contactNumber || 'N/A'}<br>
+            <strong>Email:</strong> ${airport.airportEmails || 'N/A'}
           </div>
         `;
 
@@ -376,10 +386,16 @@
         return;
       }
 
+      const name = airportName.value.trim();
+      if (!name) {
+        alert("Please enter the airport name.");
+        return;
+      }
+
       const airportData = {
-        airportName: code,
+        airportName: name,
         country: country.value.trim(),
-        email: email.value.trim(),
+        airportEmails: airportEmails.value.trim(),
         contactNumber: contactNumber.value.trim(),
         gcr: gcr.value.trim(),
         ppr: ppr.value.trim(),
@@ -400,7 +416,7 @@
         } else {
           // If editing, update the current data
           currentAirportData = { ...airportData, code: code };
-          // Optionally, refresh the displayed result
+          // Refresh the displayed result
           responseOutput.innerHTML = `
             <div class="result-header">
               <strong>${airportData.airportName}</strong> – ${airportData.country}
@@ -413,7 +429,7 @@
             </div>
             <div class="airport-info-title">Airport Info</div>
             <div class="airport-info">
-              ${airportData.additionalInformation || 'No additional information available.'}
+              <strong>Additional Information:</strong> ${airportData.additionalInformation || 'N/A'}
             </div>
           `;
         }
